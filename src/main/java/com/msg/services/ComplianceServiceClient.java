@@ -1,4 +1,4 @@
-package group.msg.implementation;
+package com.msg.services;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -12,15 +12,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @RegisterRestClient
-public interface SdCreatorClient {
+public interface ComplianceServiceClient {
     
     @POST
-    @Path("/vc-from-claims")
+    @Path("/examplepath")
     @Produces("application/json")
-    HashMap<String, Object> postClaimsGetVCs(HashMap<String, Object> claims);
-
-    @POST
-    @Path("/vp-from-vcs")
-    @Produces("application/json")
-    HashMap<String, Object> postVCsGetVP(Set<HashMap<String, Object>> verifiableCredentials);
+    Set<HashMap<String, Object>> postVCsGetCCs(Set<HashMap<String, Object>> credentials);
 }

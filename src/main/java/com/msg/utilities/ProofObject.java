@@ -1,4 +1,4 @@
-package group.msg.utilities;
+package com.msg.utilities;
 
 public class ProofObject {
     

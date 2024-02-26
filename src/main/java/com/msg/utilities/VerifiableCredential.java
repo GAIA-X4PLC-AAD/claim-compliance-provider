@@ -1,4 +1,4 @@
-package group.msg.utilities;
+package com.msg.utilities;
 
 // import java.util.SortedSet;
 // import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package group.msg.implementation;
+package com.msg.services;
 
 import java.util.HashMap;
 import java.util.HashSet;
