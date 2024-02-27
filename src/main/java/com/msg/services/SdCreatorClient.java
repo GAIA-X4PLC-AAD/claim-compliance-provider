@@ -13,7 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 @RegisterRestClient
 public interface SdCreatorClient {
-    
+
     @POST
     @Path("/vc-from-claims")
     @Produces("application/json")
