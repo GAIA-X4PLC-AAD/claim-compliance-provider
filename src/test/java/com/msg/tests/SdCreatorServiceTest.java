@@ -5,10 +5,12 @@ import jakarta.inject.Inject;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collection;
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,7 @@ public class SdCreatorServiceTest {
 
     @Test 
     public void testSendClaimsEndpoint() {
+        // Configure test data
         HashMap<String, Object> claims1 = new HashMap<>() {{
             put("id", "https://gaia-x.eu/.well-known/service1.json");
             put("type", "gx:ServiceOffering");
@@ -61,15 +64,21 @@ public class SdCreatorServiceTest {
             add(claims1);
             add(claims2);
         }};
+
+        // Execute tests
         Set<HashMap<String, Object>> verifiableCredentials = sdCreator.transformClaimsToVCs(claims);
-        System.out.println(verifiableCredentials);
         assertThat(verifiableCredentials, hasSize(2));
+        for(HashMap<String, Object> credential : verifiableCredentials) {
+            assertThat(verifyType(credential, "VerifiableCredential"), is(true));
+        }
     }
 
-    // @Test 
-    // public void testSendVCsEndpoint() {
-    //     Set<HashMap<String, Object>> claims = new HashSet<>();
-    //     Map<String, Object> partOfClaims = new HashMap<>();
-    //     claims.add(partOfClaims);
-    // }
+    public boolean verifyType(HashMap<String, Object> hashMap, String expectedType) {
+        Object typeValue = hashMap.get("type");
+        if (typeValue instanceof Collection) {
+            Collection<?> typeCollection = (Collection<?>) typeValue;
+            return typeCollection.contains(expectedType);
+        }        
+        return false;
+    }
 }
