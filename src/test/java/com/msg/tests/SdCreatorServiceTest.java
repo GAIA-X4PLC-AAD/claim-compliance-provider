@@ -78,7 +78,7 @@ public class SdCreatorServiceTest {
         if (typeValue instanceof Collection) {
             Collection<?> typeCollection = (Collection<?>) typeValue;
             return typeCollection.contains(expectedType);
-        }        
-        return false;
+        }
+        return expectedType==typeValue.toString();
     }
 }
