@@ -42,7 +42,7 @@ public class ClaimComplianceProviderController {
         credentials.addAll(verifiableCredentialsProcessor.transformClaimsToVCs(claimCredentialHolder.getClaims()));
         log.debug("Claims have been transformed to credentials.");
 
-        Set<Map<String, Object>> complianceCredentials = verifiableCredentialsProcessor.getComplianceCredentials(credentials);
+        Map<String, Object> complianceCredentials = verifiableCredentialsProcessor.getComplianceCredential(credentials);
         log.debug("ComplianceCredentials have been received.");
         Map<String, Object> verifiablePresentation = verifiableCredentialsProcessor.mergeVCAndCC(credentials, complianceCredentials);
         log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");

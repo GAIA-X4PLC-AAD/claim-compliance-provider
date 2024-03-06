@@ -1,7 +1,6 @@
 package com.msg.services;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -13,8 +12,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 @RegisterRestClient
 public interface ComplianceServiceClient {
+
     @POST
-    @Path("/examplepath") // kann dies in eine Config Variable in der application.properties ausgelagert werden?
+    @Path("/development/api/credential-offers") // kann dies in eine Config Variable in der application.properties ausgelagert werden?
     @Produces("application/json")
-    Set<Map<String, Object>> postVCsGetCCs(Set<Map<String, Object>> credentials);
+    Map<String, Object> postVPGetCC(Map<String, Object> verifiablePresentationWithoutProof);
 }

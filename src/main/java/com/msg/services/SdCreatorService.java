@@ -15,18 +15,21 @@ public class SdCreatorService {
 
     @RestClient
     @Inject
-    SdCreatorClient sdCreatorApi;
+    SdCreatorClient sdCreatorClient;
 
     public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
         Set<Map<String, Object>> claimSet = new HashSet<Map<String, Object>>();
         for(Map<String, Object> claimObject : claims) {
-            claimSet.add(sdCreatorApi.postClaimsGetVCs(claimObject));
+            claimSet.add(sdCreatorClient.postClaimsGetVCs(claimObject));
         }
         return claimSet;
     }
 
     public Map<String, Object> transformVCsToVP(Set<Map<String, Object>> credentials) {
-        return sdCreatorApi.postVCsGetVP(credentials);
+        return sdCreatorClient.postVCsGetVP(credentials);
     }
 
+    public Map<String, Object> wrapCredentialsIntoVerifiablePresentationWithoutProof(Set<Map<String, Object>> credentials) {
+        return sdCreatorClient.wrapCredentialsIntoVerifiablePresentationWithoutProof(credentials);
+    }
 }

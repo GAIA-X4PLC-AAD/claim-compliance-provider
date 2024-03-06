@@ -12,26 +12,27 @@ import jakarta.inject.Inject;
 public class VCProcessor {
 
     private ComplianceServiceService complianceService;
-    private SdCreatorService sdCreator;
+    private SdCreatorService sdCreatorService;
 
     @Inject
     public VCProcessor(ComplianceServiceService complianceService, SdCreatorService sdCreator) {
         this.complianceService = complianceService;
-        this.sdCreator = sdCreator;
+        this.sdCreatorService = sdCreator;
     }
 
     public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
-        return this.sdCreator.transformClaimsToVCs(claims);
+        return this.sdCreatorService.transformClaimsToVCs(claims);
     }
 
-    public Set<Map<String, Object>> getComplianceCredentials(Set<Map<String, Object>> verifiableCredentials) {
-        return this.complianceService.getComplianceCredentials(verifiableCredentials);
+    public Map<String, Object> getComplianceCredential(Set<Map<String, Object>> verifiableCredentials) {
+        Map<String, Object> verifiablePresentationWithoutProof = this.sdCreatorService.wrapCredentialsIntoVerifiablePresentationWithoutProof(verifiableCredentials);
+        return this.complianceService.getComplianceCredential(verifiablePresentationWithoutProof);
     }
 
-    public Map<String, Object> mergeVCAndCC(Set<Map<String, Object>> verifiableCredentials, Set<Map<String, Object>> complianceCredentials) {
+    public Map<String, Object> mergeVCAndCC(Set<Map<String, Object>> verifiableCredentials, Map<String, Object> complianceCredential) {
         Set<Map<String, Object>> mergedCredentials = new HashSet<>();
         mergedCredentials.addAll(verifiableCredentials);
-        mergedCredentials.addAll(complianceCredentials);
-        return this.sdCreator.transformVCsToVP(mergedCredentials);
+        mergedCredentials.add(complianceCredential);
+        return this.sdCreatorService.transformVCsToVP(mergedCredentials);
     }
 }
