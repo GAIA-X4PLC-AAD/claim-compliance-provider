@@ -1,6 +1,6 @@
 package com.msg.services;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,21 +15,17 @@ public class SdCreatorService {
 
     @RestClient
     @Inject
-    private SdCreatorClient sdCreatorApi;
-    
-    @Inject
-    public SdCreatorService() {
-    }
+    SdCreatorClient sdCreatorApi;
 
-    public Set<HashMap<String, Object>> transformClaimsToVCs(Set<HashMap<String, Object>> claims) {
-        Set<HashMap<String, Object>> claimSet = new HashSet<HashMap<String, Object>>();
-        for(HashMap<String, Object> claimObject : claims) {
+    public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
+        Set<Map<String, Object>> claimSet = new HashSet<Map<String, Object>>();
+        for(Map<String, Object> claimObject : claims) {
             claimSet.add(sdCreatorApi.postClaimsGetVCs(claimObject));
         }
         return claimSet;
     }
 
-    public HashMap<String, Object> transformVCsToVP(Set<HashMap<String, Object>> credentials) {
+    public Map<String, Object> transformVCsToVP(Set<Map<String, Object>> credentials) {
         return sdCreatorApi.postVCsGetVP(credentials);
     }
 

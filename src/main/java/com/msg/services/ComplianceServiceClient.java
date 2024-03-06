@@ -1,6 +1,6 @@
 package com.msg.services;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -13,9 +13,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 @RegisterRestClient
 public interface ComplianceServiceClient {
-    
     @POST
-    @Path("/examplepath")
+    @Path("/examplepath") // kann dies in eine Config Variable in der application.properties ausgelagert werden?
     @Produces("application/json")
-    Set<HashMap<String, Object>> postVCsGetCCs(Set<HashMap<String, Object>> credentials);
+    Set<Map<String, Object>> postVCsGetCCs(Set<Map<String, Object>> credentials);
 }

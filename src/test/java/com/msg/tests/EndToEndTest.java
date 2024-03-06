@@ -11,11 +11,11 @@ import static org.hamcrest.Matchers.hasItem;
 
 
 @QuarkusTest
-public class EndToEndTest {
+class EndToEndTest {
 
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class) 
-    public void testSendClaimsEndpoint() {
+    void testSendClaimsEndpoint() {
       String claims = """
         [{
         "id": "https://gaia-x.eu/.well-known/service1.json",

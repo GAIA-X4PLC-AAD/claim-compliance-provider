@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Collection;
+import java.util.Map;
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,15 +19,16 @@ import com.msg.services.SdCreatorService;
 
 
 @QuarkusTest
-public class SdCreatorServiceTest {
+// public kannst du bei der Klasse und bei der Methode weglassen beim Test
+class SdCreatorServiceTest {
 
     @Inject
     SdCreatorService sdCreator;
 
     @Test 
-    public void testSendClaimsEndpoint() {
+    void testSendClaimsEndpoint() {
         // Configure test data
-        HashMap<String, Object> claims1 = new HashMap<>() {{
+        Map<String, Object> claims1 = new HashMap<>() {{
             put("id", "https://gaia-x.eu/.well-known/service1.json");
             put("type", "gx:ServiceOffering");
             put("gx:providedBy", new HashMap<String, Object>() {{
@@ -43,7 +45,7 @@ public class SdCreatorServiceTest {
                 put("gx:formatType", "application/json");
             }});
         }};
-        HashMap<String, Object> claims2 = new HashMap<>() {{
+        Map<String, Object> claims2 = new HashMap<>() {{
             put("id", "https://gaia-x.eu/.well-known/service2.json");
             put("type", "gx:ServiceOffering");
             put("gx:providedBy", new HashMap<String, Object>() {{
@@ -60,21 +62,21 @@ public class SdCreatorServiceTest {
                 put("gx:formatType", "application/json");
             }});
         }};
-        Set<HashMap<String, Object>> claims = new HashSet<>(){{
+        Set<Map<String, Object>> claims = new HashSet<>(){{
             add(claims1);
             add(claims2);
         }};
 
         // Execute tests
-        Set<HashMap<String, Object>> verifiableCredentials = sdCreator.transformClaimsToVCs(claims);
+        Set<Map<String, Object>> verifiableCredentials = sdCreator.transformClaimsToVCs(claims);
         assertThat(verifiableCredentials, hasSize(2));
-        for(HashMap<String, Object> credential : verifiableCredentials) {
+        for(Map<String, Object> credential : verifiableCredentials) {
             assertThat(verifyType(credential, "VerifiableCredential"), is(true));
         }
     }
 
-    public boolean verifyType(HashMap<String, Object> hashMap, String expectedType) {
-        Object typeValue = hashMap.get("type");
+    boolean verifyType(Map<String, Object> Map, String expectedType) {
+        Object typeValue = Map.get("type");
         if (typeValue instanceof Collection) {
             Collection<?> typeCollection = (Collection<?>) typeValue;
             return typeCollection.contains(expectedType);

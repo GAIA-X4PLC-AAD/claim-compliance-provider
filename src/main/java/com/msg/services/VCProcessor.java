@@ -1,6 +1,6 @@
 package com.msg.services;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,16 +20,16 @@ public class VCProcessor {
         this.sdCreator = sdCreator;
     }
 
-    public Set<HashMap<String, Object>> transformClaimsToVCs(Set<HashMap<String, Object>> claims) {
+    public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
         return this.sdCreator.transformClaimsToVCs(claims);
     }
 
-    public Set<HashMap<String, Object>> getComplianceCredentials(Set<HashMap<String, Object>> verifiableCredentials) {
+    public Set<Map<String, Object>> getComplianceCredentials(Set<Map<String, Object>> verifiableCredentials) {
         return this.complianceService.getComplianceCredentials(verifiableCredentials);
     }
 
-    public HashMap<String, Object> mergeVCAndCC(Set<HashMap<String, Object>> verifiableCredentials, Set<HashMap<String, Object>> complianceCredentials) {
-        Set<HashMap<String, Object>> mergedCredentials = new HashSet<>();
+    public Map<String, Object> mergeVCAndCC(Set<Map<String, Object>> verifiableCredentials, Set<Map<String, Object>> complianceCredentials) {
+        Set<Map<String, Object>> mergedCredentials = new HashSet<>();
         mergedCredentials.addAll(verifiableCredentials);
         mergedCredentials.addAll(complianceCredentials);
         return this.sdCreator.transformVCsToVP(mergedCredentials);

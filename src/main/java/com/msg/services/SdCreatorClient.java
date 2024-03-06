@@ -1,6 +1,6 @@
 package com.msg.services;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -17,10 +17,10 @@ public interface SdCreatorClient {
     @POST
     @Path("/vc-from-claims")
     @Produces("application/json")
-    HashMap<String, Object> postClaimsGetVCs(HashMap<String, Object> claims);
+    Map<String, Object> postClaimsGetVCs(Map<String, Object> claims);
 
     @POST
     @Path("/vp-from-vcs")
     @Produces("application/json")
-    HashMap<String, Object> postVCsGetVP(Set<HashMap<String, Object>> verifiableCredentials);
+    Map<String, Object> postVCsGetVP(Set<Map<String, Object>> verifiableCredentials);
 }
