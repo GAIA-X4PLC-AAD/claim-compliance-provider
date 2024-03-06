@@ -6,8 +6,6 @@ import java.util.Set;
 import com.msg.services.*;
 import com.msg.utilities.ClaimCredentialHolder;
 
-import io.quarkus.logging.Log;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -16,7 +14,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import lombok.extern.slf4j.Slf4j;
+
 @ApplicationScoped
+@Slf4j
 @Path("")
 public class ClaimComplianceProviderController {
 
@@ -35,16 +36,16 @@ public class ClaimComplianceProviderController {
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Object> initiateVCProcessing(Set<Map<String, Object>> claimCredentialSet) {
         ClaimCredentialHolder claimCredentialHolder = this.claimsCredentialService.createClaimCredentialHolder(claimCredentialSet);
-        Log.debug("ClaimsCredentialsMix has been created.");
+        log.debug("ClaimsCredentialsMix has been created.");
         Set<Map<String, Object>> credentials = claimCredentialHolder.getVerifiableCredentials();
-        Log.debug("Credentials have been read.");
+        log.debug("Credentials have been read.");
         credentials.addAll(verifiableCredentialsProcessor.transformClaimsToVCs(claimCredentialHolder.getClaims()));
-        Log.debug("Claims have been transformed to credentials.");
+        log.debug("Claims have been transformed to credentials.");
 
         Set<Map<String, Object>> complianceCredentials = verifiableCredentialsProcessor.getComplianceCredentials(credentials);
-        Log.debug("ComplianceCredentials have been received.");
+        log.debug("ComplianceCredentials have been received.");
         Map<String, Object> verifiablePresentation = verifiableCredentialsProcessor.mergeVCAndCC(credentials, complianceCredentials);
-        Log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
+        log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
         return verifiablePresentation;
     }
 }
