@@ -1,21 +1,20 @@
 package com.msg.services;
 
+import com.msg.utilities.ClaimCredentialHolder;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.msg.utilities.ClaimCredentialHolder;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import lombok.extern.slf4j.Slf4j;
-
 @ApplicationScoped
 @Slf4j
 public class ClaimsCredentialsService {
 
-    public final String TYPEFIELD = "type";
-    public final String VERIFIABLECREDENTIAL = "VerifiableCredential";
+    public static final String TYPE_FIELD = "type";
+    public static final String VERIFIABLE_CREDENTIAL = "VerifiableCredential";
     
     public ClaimCredentialHolder createClaimCredentialHolder(Set<Map<String, Object>> claimCredentialMix) {
         Set<Map<String, Object>> claims = new HashSet<>();
@@ -34,12 +33,12 @@ public class ClaimsCredentialsService {
     }
 
     private boolean isCredential(Map<String, Object> potentialCredential) {
-        Object typeValue = potentialCredential.get(TYPEFIELD);
+        Object typeValue = potentialCredential.get(TYPE_FIELD);
         if(typeValue instanceof Collection) {
             Collection<?> typeCollection = (Collection<?>) typeValue;
-            return typeCollection.contains(VERIFIABLECREDENTIAL);
+            return typeCollection.contains(VERIFIABLE_CREDENTIAL);
         } else {
-            return typeValue.toString().equals(VERIFIABLECREDENTIAL);
+            return typeValue.toString().equals(VERIFIABLE_CREDENTIAL);
         }
     }
 }
