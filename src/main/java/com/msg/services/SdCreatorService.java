@@ -1,13 +1,12 @@
 package com.msg.services;
 
-import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 @ApplicationScoped
@@ -18,7 +17,7 @@ public class SdCreatorService {
     SdCreatorClient sdCreatorApi;
 
     public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
-        Set<Map<String, Object>> claimSet = new HashSet<Map<String, Object>>();
+        Set<Map<String, Object>> claimSet = new HashSet<>();
         for(Map<String, Object> claimObject : claims) {
             claimSet.add(sdCreatorApi.postClaimsGetVCs(claimObject));
         }
