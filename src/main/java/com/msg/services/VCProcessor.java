@@ -1,11 +1,12 @@
 package com.msg.services;
 
-import java.util.Map;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.msg.services.catalogue.FederatedCatalogueService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 @ApplicationScoped
@@ -13,11 +14,13 @@ public class VCProcessor {
 
     private ComplianceServiceService complianceService;
     private SdCreatorService sdCreatorService;
+    private FederatedCatalogueService federatedCatalogueService;
 
     @Inject
-    public VCProcessor(ComplianceServiceService complianceService, SdCreatorService sdCreator) {
+    public VCProcessor(ComplianceServiceService complianceService, SdCreatorService sdCreatorService, final FederatedCatalogueService federatedCatalogueService) {
         this.complianceService = complianceService;
-        this.sdCreatorService = sdCreator;
+        this.sdCreatorService = sdCreatorService;
+        this.federatedCatalogueService = federatedCatalogueService;
     }
 
     public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
@@ -34,5 +37,9 @@ public class VCProcessor {
         mergedCredentials.addAll(verifiableCredentials);
         mergedCredentials.add(complianceCredential);
         return this.sdCreatorService.transformVCsToVP(mergedCredentials);
+    }
+
+    public void verifyWithFederatedCatalogue(final Map<String, Object> verifiablePresentation) {
+        this.federatedCatalogueService.verify(verifiablePresentation);
     }
 }

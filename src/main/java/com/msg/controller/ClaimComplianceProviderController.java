@@ -1,11 +1,8 @@
 package com.msg.controller;
 
-import java.util.Map;
-import java.util.Set;
-
-import com.msg.services.*;
+import com.msg.services.ClaimsCredentialsService;
+import com.msg.services.VCProcessor;
 import com.msg.utilities.ClaimCredentialHolder;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -13,8 +10,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+import java.util.Set;
 
 @ApplicationScoped
 @Slf4j
@@ -46,6 +45,8 @@ public class ClaimComplianceProviderController {
         log.debug("ComplianceCredentials have been received.");
         Map<String, Object> verifiablePresentation = verifiableCredentialsProcessor.mergeVCAndCC(credentials, complianceCredentials);
         log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
+        verifiableCredentialsProcessor.verifyWithFederatedCatalogue(verifiablePresentation);
+        log.debug("VerifiablePresentation successfully verified by the federated catalogue.");
         return verifiablePresentation;
     }
 }
