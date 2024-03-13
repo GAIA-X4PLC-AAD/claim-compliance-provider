@@ -23,4 +23,10 @@ public interface SdCreatorClient {
     @Path("/vp-from-vcs")
     @Produces("application/json")
     Map<String, Object> postVCsGetVP(Set<Map<String, Object>> verifiableCredentials);
+
+    @POST
+    @Path("/vp-without-proof-from-vcs")
+    @Produces("application/json")
+    Map<String, Object> wrapCredentialsIntoVerifiablePresentationWithoutProof(Set<Map<String, Object>> verifiableCredentials);
+    
 }
