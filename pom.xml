@@ -31,27 +31,33 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <version>5.4.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
+      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -63,6 +69,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc-client</artifactId>
+      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -73,11 +80,13 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-oidc-server</artifactId>
+      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
+      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,6 +1,8 @@
 package com.msg.tests;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import jakarta.inject.Inject;
 
 import java.util.HashSet;
@@ -17,20 +19,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msg.services.SdCreatorService;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 class ComplianceServiceServiceTest {
 
     @Inject
     SdCreatorService sdCreator;
-    String LEGALPARTICIPANTPATH = Paths.get("..", "resources", "legalParticipant.json").toString();
-    String LEGALREGISTRATIONNUMBERPATH = Paths.get("..", "resources", "legalRegistrationNumber.json").toString();
-    String TERMSANDCONDITIONSPATH = Paths.get("..", "resources", "termsAndConditions.json").toString();
+    String LEGALPARTICIPANTPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "legalParticipant.json").toString();
+    String LEGALREGISTRATIONNUMBERPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "legalRegistrationNumber.json").toString();
+    String TERMSANDCONDITIONSPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "termsAndConditions.json").toString();
 
     @Test
     void testEndpoint() throws IOException {
-        // Configure test data
+        // prepare
         ObjectMapper objectMapper = new ObjectMapper();
         File legalParticipantFile = new File(LEGALPARTICIPANTPATH);
         File legalRegistrationNumberFile = new File(LEGALREGISTRATIONNUMBERPATH);
@@ -45,15 +47,17 @@ class ComplianceServiceServiceTest {
             add(termsAndConditionsVerifiableCredential);
         }};
 
-        // Execute test
+        // action
         Map<String, Object> verifiablePresentation = sdCreator.transformVCsToVP(credentials);
+        Response response = 
         given()
+          .contentType(ContentType.JSON)
           .body(verifiablePresentation)
-          .header("Content-Type", "application/json")
-          .when()
-            .post("/call-compliance")
-          .then()
-            .statusCode(201)
-            .body("type", hasItem("VerifiableCredential"));
+        .when()
+          .post("/call-compliance");
+
+        // test
+        assertThat(response.getStatusCode()).isEqualTo(201);
+        assertThat(response.getBody().jsonPath().getList("type")).contains("VerifiableCredential");
     }
 }

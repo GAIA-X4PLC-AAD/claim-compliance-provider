@@ -2,13 +2,15 @@ package com.msg.tests;
 
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
 import org.junit.jupiter.api.Test;
 
 import com.msg.controller.ClaimComplianceProviderController;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItem;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 class EndToEndTest {
@@ -16,7 +18,8 @@ class EndToEndTest {
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class) 
     void testSendClaimsEndpoint() {
-      String claims = """
+        // prepare
+        String claims = """
         [{
         "id": "https://gaia-x.eu/.well-known/service1.json",
         "type": "gx:ServiceOffering",
@@ -52,13 +55,17 @@ class EndToEndTest {
         }
         }]
         """;
+
+        // action
+        Response response = 
         given()
-          .body(claims)
-          .header("Content-Type", "application/json")
-          .when()
-            .post("/send-claims")
-          .then()
-            .statusCode(200)
-            .body("type", hasItem("VerifiablePresentation"));
+        .contentType(ContentType.JSON)
+            .body(claims)
+        .when()
+            .post("/send-claims");
+
+        // test
+        assertThat(response.getStatusCode()).isEqualTo(200);
+        assertThat(response.getBody().jsonPath().getList("type")).contains("VerifiablePresentation");
     }
 }
