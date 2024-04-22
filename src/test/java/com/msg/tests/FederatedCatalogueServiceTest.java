@@ -1,5 +1,6 @@
 package com.msg.tests;
 
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msg.services.catalogue.FederatedCatalogueClient;
@@ -17,8 +18,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,8 +28,8 @@ import static org.mockito.ArgumentMatchers.eq;
 class FederatedCatalogueServiceTest {
     private static final String PRESENTATION_200 = "presentationReturning200";
     private static final String PRESENTATION_400 = "presentationReturning400";
-    private static final Map<String, Object> VALID_PAYLOAD = Maps.of(PRESENTATION_200, PRESENTATION_200);
-    private static final Map<String, Object> INVALID_PAYLOAD = Maps.of(PRESENTATION_400, PRESENTATION_400);
+    private static final VerifiablePresentation VALID_PAYLOAD = VerifiablePresentation.fromMap(Maps.of(PRESENTATION_200, PRESENTATION_200));
+    private static final VerifiablePresentation INVALID_PAYLOAD = VerifiablePresentation.fromMap(Maps.of(PRESENTATION_400, PRESENTATION_400));
 
     @InjectMock
     @RestClient

@@ -4,8 +4,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.msg.services.SdCreatorService;
 
 @QuarkusTest
@@ -82,21 +83,17 @@ class SdCreatorServiceTest {
         };
 
         // action
-        Set<Map<String, Object>> verifiableCredentials = sdCreator.transformClaimsToVCs(claims);
+        Set<VerifiableCredential> verifiableCredentials = sdCreator.transformClaimsToVCs(claims);
 
         // test
         assertThat(verifiableCredentials).hasSize(2);
-        for (Map<String, Object> credential : verifiableCredentials) {
+        for (VerifiableCredential credential : verifiableCredentials) {
             assertThat(verifyType(credential, "VerifiableCredential")).isTrue();
         }
     }
 
-    boolean verifyType(Map<String, Object> Map, String expectedType) {
-        Object typeValue = Map.get("type");
-        if (typeValue instanceof Collection) {
-            Collection<?> typeCollection = (Collection<?>) typeValue;
-            return typeCollection.contains(expectedType);
-        }
-        return expectedType == typeValue.toString();
+    boolean verifyType(VerifiableCredential credential, String expectedType) {
+        List<String> typeValue = credential.getTypes();
+        return typeValue.contains(expectedType);
     }
 }

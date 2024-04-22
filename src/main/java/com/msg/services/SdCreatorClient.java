@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -22,7 +24,7 @@ public interface SdCreatorClient {
     @POST
     @Path("/vp-from-vcs")
     @Produces("application/json")
-    Map<String, Object> postVCsGetVP(Set<Map<String, Object>> verifiableCredentials);
+    Map<String, Object> postVCsGetVP(Set<VerifiableCredential> verifiableCredentials);
 
     @POST
     @Path("/vp-without-proof-from-vcs")

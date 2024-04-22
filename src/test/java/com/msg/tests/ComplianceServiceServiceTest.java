@@ -10,10 +10,11 @@ import java.util.Set;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.msg.services.SdCreatorService;
@@ -37,18 +38,18 @@ class ComplianceServiceServiceTest {
         File legalParticipantFile = new File(LEGALPARTICIPANTPATH);
         File legalRegistrationNumberFile = new File(LEGALREGISTRATIONNUMBERPATH);
         File termsAndConditionsFile = new File(TERMSANDCONDITIONSPATH);
-        Map<String, Object> legalParticipantVerifiableCredential = objectMapper.readValue(legalParticipantFile, new TypeReference<Map<String, Object>>() {});
-        Map<String, Object> legalRegistrationNumberVerifiableCredential = objectMapper.readValue(legalRegistrationNumberFile, new TypeReference<Map<String, Object>>() {});
-        Map<String, Object> termsAndConditionsVerifiableCredential = objectMapper.readValue(termsAndConditionsFile, new TypeReference<Map<String, Object>>() {});
+        VerifiableCredential legalParticipantVerifiableCredential = objectMapper.readValue(legalParticipantFile, new TypeReference<VerifiableCredential>() {});
+        VerifiableCredential legalRegistrationNumberVerifiableCredential = objectMapper.readValue(legalRegistrationNumberFile, new TypeReference<VerifiableCredential>() {});
+        VerifiableCredential termsAndConditionsVerifiableCredential = objectMapper.readValue(termsAndConditionsFile, new TypeReference<VerifiableCredential>() {});
 
-        Set<Map<String, Object>> credentials = new HashSet<>(){{
+        Set<VerifiableCredential> credentials = new HashSet<>(){{
             add(legalParticipantVerifiableCredential);
             add(legalRegistrationNumberVerifiableCredential);
             add(termsAndConditionsVerifiableCredential);
         }};
 
         // action
-        Map<String, Object> verifiablePresentation = sdCreator.transformVCsToVP(credentials);
+        VerifiablePresentation verifiablePresentation = sdCreator.transformVCsToVP(credentials);
         Response response = 
         given()
           .contentType(ContentType.JSON)

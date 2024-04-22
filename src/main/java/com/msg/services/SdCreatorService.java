@@ -6,6 +6,9 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
+
 import io.quarkus.rest.client.reactive.ClientExceptionMapper;
 
 import java.util.HashSet;
@@ -28,16 +31,16 @@ public class SdCreatorService {
         return new RuntimeException(String.format("Unknown issue calling Self Description Creator, response is %s", response.getStatusInfo().getReasonPhrase()));
     }
 
-    public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
-        Set<Map<String, Object>> claimSet = new HashSet<>();
+    public Set<VerifiableCredential> transformClaimsToVCs(Set<Map<String, Object>> claims) {
+        Set<VerifiableCredential> vCSet = new HashSet<>();
         for(Map<String, Object> claimObject : claims) {
-            claimSet.add(sdCreatorClient.postClaimsGetVCs(claimObject));
+            vCSet.add(VerifiableCredential.fromMap(sdCreatorClient.postClaimsGetVCs(claimObject)));
         }
-        return claimSet;
+        return vCSet;
     }
 
-    public Map<String, Object> transformVCsToVP(Set<Map<String, Object>> credentials) {
-        return sdCreatorClient.postVCsGetVP(credentials);
+    public VerifiablePresentation transformVCsToVP(Set<VerifiableCredential> credentials) {
+        return VerifiablePresentation.fromMap(sdCreatorClient.postVCsGetVP(credentials));
     }
 
     public Map<String, Object> wrapCredentialsIntoVerifiablePresentationWithoutProof(Set<Map<String, Object>> credentials) {

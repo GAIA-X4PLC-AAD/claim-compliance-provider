@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.danubetech.verifiablecredentials.*;
 
 @ApplicationScoped
 @Slf4j
@@ -29,24 +30,27 @@ public class VCProcessor {
         this.claimsCredentialsService = claimsCredentialsService;
     }
 
-    public Map<String, Object> process(Set<Map<String, Object>> claimCredentialSet) {
-        ClaimCredentialHolder claimCredentialHolder = this.claimsCredentialsService.createClaimCredentialHolder(claimCredentialSet);
+    public VerifiablePresentation process(Set<Map<String, Object>> claimCredentialSet) {
+        ClaimCredentialHolder unorderedClaimsAndCredentials = this.claimsCredentialsService.createClaimCredentialHolder(claimCredentialSet);
         log.debug("ClaimsCredentialsMix has been created.");
-        Set<Map<String, Object>> credentials = claimCredentialHolder.getVerifiableCredentials();
-        log.debug("Credentials have been read.");
-        credentials.addAll(this.transformClaimsToVCs(claimCredentialHolder.getClaims()));
-        log.debug("Claims have been transformed to credentials.");
+        Set<VerifiableCredential> credentials = unorderedClaimsAndCredentials.getVerifiableCredentialsUnordered();
+        credentials.addAll(this.transformClaimsToVCs(unorderedClaimsAndCredentials.getClaims()));
+        log.debug("Credentials have been extracted, claims have been extracted and transformed to credentials.");
+        
+        // Following code snippet will be utilized as soon as we managed to utilize the compliance Service in conjunction with our SD-Creator deployment
+        // ClaimCredentialHolder orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
+        // Map<String, Object> complianceCredentials = this.getComplianceCredential(orderedVerifiableCredentials.getVerifiableCredentialsGX());
+        // log.debug("ComplianceCredentials have been received.");
+        // Map<String, Object> verifiablePresentation = this.mergeVCAndCC(credentials, complianceCredentials);
+        // log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
 
-        Map<String, Object> complianceCredentials = this.getComplianceCredential(credentials);
-        log.debug("ComplianceCredentials have been received.");
-        Map<String, Object> verifiablePresentation = this.mergeVCAndCC(credentials, complianceCredentials);
-        log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
+        VerifiablePresentation verifiablePresentation = this.transformVCstoVP(credentials);
         this.verifyWithFederatedCatalogue(verifiablePresentation);
         log.debug("VerifiablePresentation successfully verified by the federated catalogue.");
         return verifiablePresentation;
     }
 
-    public Set<Map<String, Object>> transformClaimsToVCs(Set<Map<String, Object>> claims) {
+    public Set<VerifiableCredential> transformClaimsToVCs(Set<Map<String, Object>> claims) {
         return this.sdCreatorService.transformClaimsToVCs(claims);
     }
 
@@ -55,14 +59,18 @@ public class VCProcessor {
         return this.complianceService.getComplianceCredential(verifiablePresentationWithoutProof);
     }
 
-    public Map<String, Object> mergeVCAndCC(Set<Map<String, Object>> verifiableCredentials, Map<String, Object> complianceCredential) {
-        Set<Map<String, Object>> mergedCredentials = new HashSet<>();
+    public VerifiablePresentation mergeVCAndCC(Set<VerifiableCredential> verifiableCredentials, VerifiableCredential complianceCredential) {
+        Set<VerifiableCredential> mergedCredentials = new HashSet<>();
         mergedCredentials.addAll(verifiableCredentials);
         mergedCredentials.add(complianceCredential);
         return this.sdCreatorService.transformVCsToVP(mergedCredentials);
     }
 
-    public void verifyWithFederatedCatalogue(final Map<String, Object> verifiablePresentation) {
+    public VerifiablePresentation transformVCstoVP(Set<VerifiableCredential> verifiableCredentials) {
+        return this.sdCreatorService.transformVCsToVP(verifiableCredentials);
+    }
+
+    public void verifyWithFederatedCatalogue(final VerifiablePresentation verifiablePresentation) {
         this.federatedCatalogueService.verify(verifiablePresentation);
     }
 }

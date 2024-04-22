@@ -1,5 +1,6 @@
 package com.msg.controller;
 
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.services.VCProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -27,7 +28,7 @@ public class ClaimComplianceProviderController {
     @Path("/send-claims")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> initiateVCProcessing(Set<Map<String, Object>> claimCredentialSet) {
+    public VerifiablePresentation initiateVCProcessing(Set<Map<String, Object>> claimCredentialSet) {
         return verifiableCredentialsProcessor.process(claimCredentialSet);
     }
 }
