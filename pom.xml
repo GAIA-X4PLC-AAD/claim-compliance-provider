@@ -12,7 +12,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.7.3</quarkus.platform.version>
+    <quarkus.platform.version>3.8.2</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.2.5</surefire-plugin.version>
   </properties>
@@ -42,22 +42,18 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
-      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
-      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
-      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
-      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -68,7 +64,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
-      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -80,7 +75,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc-client</artifactId>
-      <version>3.8.2</version>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -91,13 +85,17 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-oidc-server</artifactId>
-      <version>3.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
-      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8</artifactId>
+      <version>2.27.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

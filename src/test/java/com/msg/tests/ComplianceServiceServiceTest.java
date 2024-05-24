@@ -1,64 +1,82 @@
 package com.msg.tests;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import jakarta.inject.Inject;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import com.danubetech.verifiablecredentials.VerifiableCredential;
-import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.msg.services.SdCreatorService;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.msg.services.ComplianceServiceService;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.given;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @QuarkusTest
+@QuarkusTestResource(WireMockTestResource.class)
 class ComplianceServiceServiceTest {
-
     @Inject
-    SdCreatorService sdCreator;
-    String LEGALPARTICIPANTPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "legalParticipant.json").toString();
-    String LEGALREGISTRATIONNUMBERPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "legalRegistrationNumber.json").toString();
-    String TERMSANDCONDITIONSPATH = Paths.get("src", "test", "java", "com", "msg", "resources", "termsAndConditions.json").toString();
+    ComplianceServiceService complianceServiceService;
+
+    @InjectWireMock
+    WireMockServer wireMockServer;
+
+    @BeforeEach
+    public void setup() {
+        configureFor("localhost", wireMockServer.port());
+    }
 
     @Test
+    @DisplayName("IF valid request was sent THEN the response contains a field credentialSubject.")
     void testEndpoint() throws IOException {
         // prepare
-        ObjectMapper objectMapper = new ObjectMapper();
-        File legalParticipantFile = new File(LEGALPARTICIPANTPATH);
-        File legalRegistrationNumberFile = new File(LEGALREGISTRATIONNUMBERPATH);
-        File termsAndConditionsFile = new File(TERMSANDCONDITIONSPATH);
-        VerifiableCredential legalParticipantVerifiableCredential = objectMapper.readValue(legalParticipantFile, new TypeReference<VerifiableCredential>() {});
-        VerifiableCredential legalRegistrationNumberVerifiableCredential = objectMapper.readValue(legalRegistrationNumberFile, new TypeReference<VerifiableCredential>() {});
-        VerifiableCredential termsAndConditionsVerifiableCredential = objectMapper.readValue(termsAndConditionsFile, new TypeReference<VerifiableCredential>() {});
+        String jsonRequest = Files.readString(Path.of("src/test/resources/compliance/verifiablePresentationRequest.json"));
+        String jsonResponse = Files.readString(Path.of("src/test/resources/compliance/complianceCredentialsResponse.json"));
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> requestMap = mapper.readValue(jsonRequest, new TypeReference<>() {
+        });
 
-        Set<VerifiableCredential> credentials = new HashSet<>(){{
-            add(legalParticipantVerifiableCredential);
-            add(legalRegistrationNumberVerifiableCredential);
-            add(termsAndConditionsVerifiableCredential);
-        }};
+        stubFor(post(urlEqualTo("/api/credential-offers"))
+                .withRequestBody(equalToJson(jsonRequest))
+                .willReturn(aResponse()
+                        .withStatus(201)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(jsonResponse)));
 
         // action
-        VerifiablePresentation verifiablePresentation = sdCreator.transformVCsToVP(credentials);
-        Response response = 
-        given()
-          .contentType(ContentType.JSON)
-          .body(verifiablePresentation)
-        .when()
-          .post("/call-compliance");
+        Map<String, Object> complianceCredential = complianceServiceService.getComplianceCredential(requestMap);
 
         // test
-        assertThat(response.getStatusCode()).isEqualTo(201);
-        assertThat(response.getBody().jsonPath().getList("type")).contains("VerifiableCredential");
+        assertThat(complianceCredential).isNotNull();
+        assertThat(complianceCredential.get("credentialSubject")).isNotNull();
+    }
+
+    @Test
+    @DisplayName("IF exception is thrown inside the REST client THEN it is handled by @ClientExceptionMapper.")
+    void testExceptionHandling() {
+        // Prepare
+        stubFor(post(urlEqualTo("/api/credential-offers"))
+                .willReturn(WireMock.aResponse().withStatus(400).withBody("Bad Request")));
+
+        // action and test
+        assertThatThrownBy(() -> {
+            complianceServiceService.getComplianceCredential(Collections.emptyMap());
+        }).isInstanceOf(RuntimeException.class)
+                .hasMessageStartingWith("Received: 'Bad Request, status code 400' when invoking: Rest Client method: 'com.msg.services.ComplianceServiceClient");
+    }
+
+    private boolean verifyType(final VerifiableCredential credential) {
+        return credential.getTypes().contains("VerifiableCredential");
     }
 }

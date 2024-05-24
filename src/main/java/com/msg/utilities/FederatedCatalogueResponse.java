@@ -13,5 +13,5 @@ public class FederatedCatalogueResponse {
         private String lifecycleStatus;
         private String issuer;
         private String issuedDateTime;
-        List<String> validatorDids = new ArrayList<String>();
+        List<String> validatorDids = new ArrayList<>();
 }

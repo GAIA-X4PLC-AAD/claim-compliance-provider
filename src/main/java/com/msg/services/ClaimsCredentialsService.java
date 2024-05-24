@@ -5,22 +5,16 @@ import com.msg.utilities.ClaimCredentialHolder;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @ApplicationScoped
 @Slf4j
 public class ClaimsCredentialsService {
 
     protected static final String TYPE_FIELD = "type";
+    protected static final String TYPE_FIELD_WITH_AT = "@type";
     protected static final String VERIFIABLE_CREDENTIAL = "VerifiableCredential";
-    protected static final Set<String> GX_TYPES = new HashSet<>(Arrays.asList( 
+    public static final Set<String> GX_TYPES = new HashSet<>(Arrays.asList(
                                                                     "BlockStorage", 
                                                                         "Catalogue", 
                                                                         "ComplianceAssessmentBody", 
@@ -46,8 +40,10 @@ public class ClaimsCredentialsService {
                                                                         "Image", 
                                                                         "Infrastructure", 
                                                                         "InstantiatedVirtualResource", 
-                                                                        "Interconnection", 
-                                                                        "LegalPerson", 
+                                                                        "Interconnection",
+                                                                        "LegalParticipant",
+                                                                        "LegalPerson",
+                                                                        "legalRegistrationNumber",
                                                                         "LinkConnectivity", 
                                                                         "LocatedServiceOffering", 
                                                                         "Location", 
@@ -86,33 +82,34 @@ public class ClaimsCredentialsService {
                                                                         "Disk",
                                                                         "DataAccountExport", 
                                                                         "Endpoint", 
-                                                                        "TermsAndConditions", 
+                                                                        "TermsAndConditions",
+                                                                        "GaiaXTermsAndConditions",
                                                                         "Standard", 
                                                                         "Measure"));
     
-    public ClaimCredentialHolder createClaimCredentialHolder(Set<Map<String, Object>> claimCredentialSet) {
-        Set<Map<String, Object>> claims = new HashSet<>();
-        Set<VerifiableCredential> verifiableCredentials = new HashSet<>();
+    public ClaimCredentialHolder createClaimCredentialHolder(final Set<Map<String, Object>> claimCredentialSet) {
+        final Set<Map<String, Object>> claims = new HashSet<>();
+        final Set<VerifiableCredential> verifiableCredentials = new HashSet<>();
 
-        for(Map<String, Object> claimOrCredential : claimCredentialSet) {
+        for(final Map<String, Object> claimOrCredential : claimCredentialSet) {
             if(isCredential(claimOrCredential)) {
                 verifiableCredentials.add(VerifiableCredential.fromMap(claimOrCredential));
             } else {
                 claims.add(claimOrCredential);
             }
         }
-        ClaimCredentialHolder claimCredentialHolder = ClaimCredentialHolder.builder().claims(claims).verifiableCredentialsUnordered(verifiableCredentials).build();
+        final ClaimCredentialHolder claimCredentialHolder = ClaimCredentialHolder.builder().claims(claims).verifiableCredentialsUnordered(verifiableCredentials).build();
         log.info("You provided: {} claims and {} credentials", claimCredentialHolder.getClaims().size(), claimCredentialHolder.getVerifiableCredentialsUnordered().size());
         return claimCredentialHolder;
     }
 
     public ClaimCredentialHolder separateDomainSpecificCredentials(Set<VerifiableCredential> verifiableCredentials){
-        Set<VerifiableCredential> verifiableCredentialsGX = new HashSet<>();
-        Set<VerifiableCredential> verifiableCredentialsDomain = new HashSet<>();
+        final Set<VerifiableCredential> verifiableCredentialsGX = new HashSet<>();
+        final Set<VerifiableCredential> verifiableCredentialsDomain = new HashSet<>();
         
-        for(VerifiableCredential credential : verifiableCredentials) {
-            List<String> typeField = credential.getCredentialSubject().getTypes();
-            List<String> typeFieldsWithoutPrefix = removePrefixes(typeField);
+        for(final VerifiableCredential credential : verifiableCredentials) {
+            final List<String> typeField = extractTypes(credential);
+            final List<String> typeFieldsWithoutPrefix = removePrefixes(typeField);
             log.info(typeFieldsWithoutPrefix.toString());
             if(Collections.disjoint(typeFieldsWithoutPrefix, GX_TYPES)) {
                 verifiableCredentialsDomain.add(credential);
@@ -123,20 +120,39 @@ public class ClaimsCredentialsService {
         return ClaimCredentialHolder.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
     }
 
-    private boolean isCredential(Map<String, Object> potentialCredential) {
-        Set<String> typeCollection = getTypeValuesAsSet(potentialCredential.get(TYPE_FIELD));
+    private List<String> extractTypes(final VerifiableCredential credential) {
+        final Map<String, Object> claims = credential.getCredentialSubject().getJsonObject();
+        return new ArrayList<>(getTypeValuesAsSet(claims));
+    }
+
+    private boolean isCredential(final Map<String, Object> potentialCredential) {
+        final Set<String> typeCollection = getTypeValuesAsSet(potentialCredential);
         return typeCollection.contains(VERIFIABLE_CREDENTIAL);
     }
 
-    private Set<String> getTypeValuesAsSet(Object typeValue) {
-        return (typeValue instanceof Collection) ?
-                ((Collection<?>) typeValue).stream().map(Object::toString).collect(Collectors.toSet()) :
-                new HashSet<>(Arrays.asList(typeValue.toString()));
+    private Set<String> getTypeValuesAsSet(final Map<String, Object> map) {
+        final Set<String> result = new HashSet<>();
+        final Object typeValue = map.get(TYPE_FIELD);
+        final Object atTypeValue = map.get(TYPE_FIELD_WITH_AT);
+
+        if (typeValue instanceof Collection) {
+            ((Collection<?>) typeValue).stream().map(Object::toString).forEach(result::add);
+        } else if (typeValue != null) {
+            result.add(typeValue.toString());
+        }
+
+        if (atTypeValue instanceof Collection) {
+            ((Collection<?>) atTypeValue).stream().map(Object::toString).forEach(result::add);
+        } else if (atTypeValue != null) {
+            result.add(atTypeValue.toString());
+        }
+
+        return result;
     }
 
-    private List<String> removePrefixes(List<String> fieldsHavingPrefixes) {
+    private List<String> removePrefixes(final List<String> fieldsHavingPrefixes) {
         return fieldsHavingPrefixes.stream()
             .map(s -> s.substring(s.indexOf(":") + 1))
-            .collect(Collectors.toList());
+            .toList();
     }
 }
