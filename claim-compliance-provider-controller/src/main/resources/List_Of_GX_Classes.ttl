@@ -1,0 +1,106 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gax-core: <https://w3id.org/gaia-x/core#> .
+@prefix gax-trust-framework: <https://w3id.org/gaia-x/gax-trust-framework#> .
+@prefix gax-validation: <https://w3id.org/gaia-x/validation#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+    
+    sh:targetClass gax-trust-framework:BigData .
+    sh:targetClass gax-trust-framework:BlockStorage .
+    sh:targetClass gax-trust-framework:Catalogue .
+    sh:targetClass gax-trust-framework:ComplianceAssessmentBody .
+    sh:targetClass gax-trust-framework:ComplianceCertificateClaim .
+    sh:targetClass gax-trust-framework:ComplianceCertificateCredential .
+    sh:targetClass gax-trust-framework:ComplianceCertificationScheme .
+    sh:targetClass gax-trust-framework:ComplianceCriteriaCombination .
+    sh:targetClass gax-trust-framework:ComplianceCriterion .
+    sh:targetClass gax-trust-framework:ComplianceLabel .
+    sh:targetClass gax-trust-framework:ComplianceReferenceManager .
+    sh:targetClass gax-trust-framework:ComplianceReference .
+    sh:targetClass gax-trust-framework:Compute .
+    sh:targetClass gax-trust-framework:Connectivity .
+    sh:targetClass gax-trust-framework:DataConnector .
+    sh:targetClass gax-trust-framework:DataResource .
+    sh:targetClass gax-trust-framework:Database .
+    sh:targetClass gax-trust-framework:DigitalIdentityWallet .
+    sh:targetClass gax-trust-framework:FileStorage .
+    sh:targetClass gax-trust-framework:IdentityAccessManagement .
+    sh:targetClass gax-trust-framework:IdentityFederation .
+    sh:targetClass gax-trust-framework:IdentityProvider .
+    sh:targetClass gax-trust-framework:ImageRegistry .
+    sh:targetClass gax-trust-framework:Image .
+    sh:targetClass gax-trust-framework:Infrastructure .
+    sh:targetClass gax-trust-framework:InstantiatedVirtualResource .
+    sh:targetClass gax-trust-framework:Interconnection .
+    sh:targetClass gax-trust-framework:LegalPerson .
+    sh:targetClass gax-trust-framework:LinkConnectivity .
+    sh:targetClass gax-trust-framework:LocatedServiceOffering .
+    sh:targetClass gax-trust-framework:Location .
+    sh:targetClass gax-trust-framework:NetworkConnectivity .
+    sh:targetClass gax-trust-framework:Network .
+    sh:targetClass gax-trust-framework:NetworkingDevice .
+    sh:targetClass gax-trust-framework:Node .
+    sh:targetClass gax-trust-framework:ObjectStorage .
+    sh:targetClass gax-trust-framework:Orchestration .
+    sh:targetClass gax-core:Participant .
+    sh:targetClass gax-trust-framework:PhysicalConnectivity .
+    sh:targetClass gax-trust-framework:PhysicalNode .
+    sh:targetClass gax-trust-framework:PhysicalResource .
+    sh:targetClass gax-trust-framework:Platform .
+    sh:targetClass gax-trust-framework:Provider .
+    sh:targetClass gax-core:Resource,
+        gax-trust-framework:Resource .
+    sh:targetClass gax-core:ServiceOffering,
+        gax-trust-framework:ServiceOffering .
+    sh:targetClass gax-trust-framework:SoftwareOffering .
+    sh:targetClass gax-trust-framework:SoftwareResource .
+    sh:targetClass gax-trust-framework:Storage .
+    sh:targetClass gax-trust-framework:ThirdPartyComplianceCertificateClaim .
+    sh:targetClass gax-trust-framework:ThirdPartyComplianceCertificateCredential .
+    sh:targetClass gax-trust-framework:ThirdPartyComplianceCertificationScheme .
+    sh:targetClass gax-trust-framework:VerifiableCredentialWallet .
+    sh:targetClass gax-trust-framework:VirtualNode .
+    sh:targetClass gax-trust-framework:VirtualResource .
+    sh:targetClass gax-trust-framework:Wallet .
+    sh:targetClass gax-trust-framework:Encryption .
+    sh:targetClass gax-trust-framework:FPGA .
+    sh:targetClass gax-trust-framework:Flavor .
+    sh:targetClass gax-trust-framework:Signing .
+    sh:targetClass gax-trust-framework:VolumeType .
+    sh:targetClass gax-trust-framework:ServiceAccessPoint .
+    sh:targetClass gax-trust-framework:CPU .
+    sh:targetClass gax-trust-framework:GPU .
+    sh:targetClass vcard:Address .
+    sh:targetClass gax-trust-framework:Disk .
+    sh:targetClass foaf:Agent .
+    sh:targetClass gax-trust-framework:DataAccountExport .
+    sh:targetClass gax-trust-framework:Endpoint .
+    sh:targetClass gax-trust-framework:TermsAndConditions .
+    sh:targetClass gax-trust-framework:Standard .
+    sh:targetClass gax-trust-framework:Measure .
+
+
+
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix gax-validation:  <http://w3id.org/gaia-x/validation#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix gax-core: <http://w3id.org/gaia-x/core#> .
+@prefix gax-node: <http://w3id.org/gaia-x/node#> .
+@prefix gax-resource: <http://w3id.org/gaia-x/resource#> .
+@prefix gax-participant: <http://w3id.org/gaia-x/participant#> .
+@prefix gax-service: <http://w3id.org/gaia-x/service#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix did: <https://www.w3.org/TR/did-core/#> .
+
+	sh:targetClass gax-participant:LegalPerson ;
+	sh:targetClass vcard:Address ;
+	sh:targetClass gax-core:TermsAndConditions ;
