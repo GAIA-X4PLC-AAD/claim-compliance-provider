@@ -50,9 +50,9 @@ class EndToEndTest {
         // prepare
         final ObjectMapper objectMapper = new ObjectMapper();
 
-        final Set<Map<String, Object>> claimsAndCredentials = readClaimsAndCredentials(objectMapper);
-        final Set<Map<String, Object>> credentialsFromPayload = collectCredentials(claimsAndCredentials);
-        final Set<Map<String, Object>> claimsFromPayload = collectClaims(claimsAndCredentials);
+        final Map<String, Object> claimsAndCredentials = readClaimsAndCredentials(objectMapper);
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> credentialsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("verifiableCredentials");
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> claimsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("claims");
         final Set<Map<String, Object>> allVerifiableCredentials = new HashSet<>(credentialsFromPayload);
 
         for (final Map<String, Object> claim : claimsFromPayload) {
@@ -115,7 +115,7 @@ class EndToEndTest {
         // TODO test if response payload is as expected
         assertThat(resultVP.getLdProof()).isNotNull();
         assertThat(resultVP.getLdProof().getType()).isEqualTo("JsonWebSignature2020");
-        final List<Map<String, Object>> vcs = (List<Map<String, Object>>) resultVP.getJsonObject().get("verifiableCredential");
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> vcs = (List<Map<String, Object>>) resultVP.getJsonObject().get("verifiableCredential");
         final Map<String, VerifiableCredential> id2vcMap = vcs.stream().collect(Collectors.toMap(vc -> (String) vc.get("id"), VerifiableCredential::fromMap));
         assertThat(id2vcMap).hasSize(10)
                 .containsKey("https://participant.gxfs.gx4fm.org/.well-known/legalParticipant.json")
@@ -130,29 +130,9 @@ class EndToEndTest {
         assertThat(id2vcMap.keySet().stream().filter(k -> k.startsWith("https://gaia-x.eu/.well-known/vcId/")).count()).isEqualTo(6);
     }
 
-    private Set<Map<String, Object>> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {
+    private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {
         final String inputPayload = Files.readString(Path.of("src/test/resources/end2end/01_serviceInput.json"));
         return objectMapper.readValue(inputPayload, new TypeReference<>() {});
-    }
-
-    private Set<Map<String, Object>> collectClaims(final Set<Map<String, Object>> claimsAndCredentials) {
-        final Set<Map<String, Object>> claims = new HashSet<>();
-        for (final Map<String, Object> claimOrCredential : claimsAndCredentials) {
-            if (!isVerifiableCredential(claimOrCredential)) {
-                claims.add(claimOrCredential);
-            }
-        }
-        return claims;
-    }
-
-    private Set<Map<String, Object>> collectCredentials(final Set<Map<String, Object>> claimsAndCredentials) {
-        final Set<Map<String, Object>> credentials = new HashSet<>();
-        for (final Map<String, Object> claimOrCredential : claimsAndCredentials) {
-            if (isVerifiableCredential(claimOrCredential)) {
-                credentials.add(claimOrCredential);
-            }
-        }
-        return credentials;
     }
 
     @SuppressWarnings("unchecked") // unchecked casts from Object to Map<String, Object>
@@ -216,10 +196,6 @@ class EndToEndTest {
 
     private boolean isGaiaXType(final Map<String, Object> credentialSubject, final String gaiaXTypeName) {
         return containsType(credentialSubject.get("type"), gaiaXTypeName) || containsType(credentialSubject.get("@type"), gaiaXTypeName);
-    }
-
-    private boolean isVerifiableCredential(final Map<String, Object> vc) {
-        return containsType(vc.get("type"), "VerifiableCredential") || containsType(vc.get("@type"), "VerifiableCredential");
     }
 
     private boolean containsType(final Object typeObject, final String typeName) {

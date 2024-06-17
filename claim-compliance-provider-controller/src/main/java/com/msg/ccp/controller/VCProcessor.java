@@ -3,7 +3,7 @@ package com.msg.ccp.controller;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.catalogue.ICatalogueService;
-import com.msg.ccp.claims.ClaimCredentialHolder;
+import com.msg.ccp.claims.CredentialContainer;
 import com.msg.ccp.claims.IClaimsCredentialsService;
 import com.msg.ccp.compliance.IComplianceServiceService;
 import com.msg.ccp.sdcreator.ISignerService;
@@ -34,14 +34,13 @@ public class VCProcessor implements IClaimComplianceProviderService {
         this.claimsCredentialsService = claimsCredentialsService;
     }
 
-    public VerifiablePresentation process(final Set<Map<String, Object>> claimCredentialSet) {
-        final ClaimCredentialHolder unorderedClaimsAndCredentials = this.claimsCredentialsService.createClaimCredentialHolder(claimCredentialSet);
+    public VerifiablePresentation process(final Set<Map<String, Object>> claims, final Set<VerifiableCredential> verifiableCredentials) {
         log.debug("ClaimsCredentialsMix has been created.");
-        final Set<VerifiableCredential> credentials = unorderedClaimsAndCredentials.getVerifiableCredentialsUnordered();
-        credentials.addAll(this.transformClaimsToVCs(unorderedClaimsAndCredentials.getClaims()));
+        final Set<VerifiableCredential> credentials = new HashSet<>(verifiableCredentials);
+        credentials.addAll(this.transformClaimsToVCs(claims));
         log.debug("Credentials have been extracted, claims have been extracted and transformed to credentials.");
 
-        final ClaimCredentialHolder orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
+        final CredentialContainer orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
         final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.getVerifiableCredentialsGX());
         log.debug("ComplianceCredentials have been received.");
         final VerifiablePresentation verifiablePresentation = this.mergeVCAndCC(credentials, complianceCredential);

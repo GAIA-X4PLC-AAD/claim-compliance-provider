@@ -91,25 +91,8 @@ public class ClaimsCredentialsService implements IClaimsCredentialsService {
                                                                         "Measure")));
     protected static final String TYPE_FIELD = "type";
     protected static final String TYPE_FIELD_WITH_AT = "@type";
-    protected static final String VERIFIABLE_CREDENTIAL = "VerifiableCredential";
 
-    public ClaimCredentialHolder createClaimCredentialHolder(final Set<Map<String, Object>> claimCredentialSet) {
-        final Set<Map<String, Object>> claims = new HashSet<>();
-        final Set<VerifiableCredential> verifiableCredentials = new HashSet<>();
-
-        for(final Map<String, Object> claimOrCredential : claimCredentialSet) {
-            if(isCredential(claimOrCredential)) {
-                verifiableCredentials.add(VerifiableCredential.fromMap(claimOrCredential));
-            } else {
-                claims.add(claimOrCredential);
-            }
-        }
-        final ClaimCredentialHolder claimCredentialHolder = ClaimCredentialHolder.builder().claims(claims).verifiableCredentialsUnordered(verifiableCredentials).build();
-        log.info("You provided: {} claims and {} credentials", claimCredentialHolder.getClaims().size(), claimCredentialHolder.getVerifiableCredentialsUnordered().size());
-        return claimCredentialHolder;
-    }
-
-    public ClaimCredentialHolder separateDomainSpecificCredentials(Set<VerifiableCredential> verifiableCredentials){
+    public CredentialContainer separateDomainSpecificCredentials(final Set<VerifiableCredential> verifiableCredentials){
         final Set<VerifiableCredential> verifiableCredentialsGX = new HashSet<>();
         final Set<VerifiableCredential> verifiableCredentialsDomain = new HashSet<>();
         
@@ -123,17 +106,12 @@ public class ClaimsCredentialsService implements IClaimsCredentialsService {
                 verifiableCredentialsGX.add(credential);
             }
         }
-        return ClaimCredentialHolder.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
+        return CredentialContainer.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
     }
 
     private List<String> extractTypes(final VerifiableCredential credential) {
         final Map<String, Object> claims = credential.getCredentialSubject().getJsonObject();
         return new ArrayList<>(getTypeValuesAsSet(claims));
-    }
-
-    private boolean isCredential(final Map<String, Object> potentialCredential) {
-        final Set<String> typeCollection = getTypeValuesAsSet(potentialCredential);
-        return typeCollection.contains(VERIFIABLE_CREDENTIAL);
     }
 
     private Set<String> getTypeValuesAsSet(final Map<String, Object> map) {
