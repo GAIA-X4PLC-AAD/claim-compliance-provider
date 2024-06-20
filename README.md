@@ -23,7 +23,7 @@ mvn clean install
 ## 2. Build the Docker Image
 Build the Docker image using the provided Dockerfile. Run the following command in your terminal:
 ```bash
-docker build -t ccp -f src/main/docker/Dockerfile.jvm .`
+docker build -t ccp -f claim-compliance-provider-controller/src/main/docker/Dockerfile.jvm ./claim-compliance-provider-controller
 ```
 
 ## 3. Run the Docker Container

@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: ""
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -34,11 +34,11 @@ container:
 # Note: Each service ports definition must link to a container.main.ports definition
 service:
   type: ClusterIP
-  ingressPort: 80 # Points to one of the service ports below
+  ingressPort: 8080 # Points to one of the service ports below
   ports:
     - name: http
-      port: 80
-      targetPort: http # Link to a related definition of container.main.ports.name or container.main.ports.port
+      port: 8080
+      targetPort: 8080 # Link to a related definition of container.main.ports.name or container.main.ports.port
       protocol: TCP
 
 secrets:

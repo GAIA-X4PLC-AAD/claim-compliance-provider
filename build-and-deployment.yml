@@ -9,7 +9,7 @@ pool:
 
 variables:
   - name: PathToDockerfile
-    value: src/main/docker/Dockerfile.jvm
+    value: claim-compliance-provider-controller/src/main/docker/Dockerfile.jvm
   - name: HelmChartPath
     value: helm
   - group: common-variables
@@ -55,7 +55,7 @@ stages:
             inputs:
               targetType: inline
               script: |
-                APP_VERSION=$(grep 'application.version' target/classes/application.properties | cut -d "=" -f2)
+                APP_VERSION=$(grep 'application.version' claim-compliance-provider-controller/target/classes/application.properties | cut -d "=" -f2)
                 echo "App Version: ${APP_VERSION}"
                 ARTIFACT_VERSION=$(echo ${APP_VERSION})
                 echo "Artifact version: ${ARTIFACT_VERSION}"
@@ -77,7 +77,7 @@ stages:
                 latest
               command: buildAndPush
               Dockerfile: $(PathToDockerfile)
-              buildContext: .
+              buildContext: ./claim-compliance-provider-controller
 
           - task: HelmDeploy@0
             displayName: Pre-Check Helm deployment
