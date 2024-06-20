@@ -24,7 +24,7 @@ public class ClaimComplianceProviderController {
     private final IClaimComplianceProviderService verifiableCredentialsProcessor;
 
     @Inject
-    public ClaimComplianceProviderController(final VCProcessor verifiableCredentialsProcessor) {
+    public ClaimComplianceProviderController(final IClaimComplianceProviderService verifiableCredentialsProcessor) {
         this.verifiableCredentialsProcessor = verifiableCredentialsProcessor;
     }
 

@@ -15,7 +15,7 @@ import java.util.Set;
 
 @ApplicationScoped
 @Slf4j
-public class ClaimsCredentialsService implements IClaimsCredentialsService {
+public class ClaimsCredentialsService {
 
     public static final Set<String> GX_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                                                                     "BlockStorage", 

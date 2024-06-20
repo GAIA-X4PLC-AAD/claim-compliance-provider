@@ -1,11 +1,12 @@
-package com.msg.ccp.controller;
+package com.msg.ccp.processor;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.catalogue.ICatalogueService;
+import com.msg.ccp.claims.ClaimsCredentialsService;
 import com.msg.ccp.claims.CredentialContainer;
-import com.msg.ccp.claims.IClaimsCredentialsService;
 import com.msg.ccp.compliance.IComplianceServiceService;
+import com.msg.ccp.controller.IClaimComplianceProviderService;
 import com.msg.ccp.sdcreator.ISignerService;
 import foundation.identity.jsonld.JsonLDObject;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,10 +25,10 @@ public class VCProcessor implements IClaimComplianceProviderService {
     private final IComplianceServiceService complianceService;
     private final ISignerService sdCreatorService;
     private final ICatalogueService federatedCatalogueService;
-    private final IClaimsCredentialsService claimsCredentialsService;
+    private final ClaimsCredentialsService claimsCredentialsService;
 
     @Inject
-    public VCProcessor(final IComplianceServiceService complianceService, final ISignerService sdCreatorService, final ICatalogueService federatedCatalogueService, final IClaimsCredentialsService claimsCredentialsService) {
+    public VCProcessor(final IComplianceServiceService complianceService, final ISignerService sdCreatorService, final ICatalogueService federatedCatalogueService, final ClaimsCredentialsService claimsCredentialsService) {
         this.complianceService = complianceService;
         this.sdCreatorService = sdCreatorService;
         this.federatedCatalogueService = federatedCatalogueService;

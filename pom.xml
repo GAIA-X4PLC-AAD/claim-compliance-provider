@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>claim-compliance-provider-controller</module>
-    <module>claim-compliance-provider-claimcredentials</module>
+    <module>claim-compliance-provider-processor</module>
     <module>claim-compliance-provider-compliance</module>
     <module>claim-compliance-provider-sdcreator</module>
     <module>claim-compliance-provider-test</module>
