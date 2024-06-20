@@ -8,6 +8,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
@@ -16,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @ApplicationScoped
+@Slf4j
 @Path("")
 public class ClaimComplianceProviderController {
 
@@ -419,6 +421,10 @@ public class ClaimComplianceProviderController {
     @APIResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(implementation = VerifiablePresentation.class)))
     public VerifiablePresentation initiateVCProcessing(final Payload payload) {
-        return verifiableCredentialsProcessor.process(payload.getClaims(), payload.getVerifiableCredentials());
+        log.info("Initiating VC processing");
+        log.debug("Payload: {}", payload);
+        VerifiablePresentation result = verifiableCredentialsProcessor.process(payload.getClaims(), payload.getVerifiableCredentials());
+        log.info("VC processing completed");
+        return result;
     }
 }

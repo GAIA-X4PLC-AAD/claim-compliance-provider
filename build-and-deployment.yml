@@ -1,0 +1,177 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: PathToDockerfile
+    value: src/main/docker/Dockerfile.jvm
+  - name: HelmChartPath
+    value: helm
+  - group: common-variables
+  - group: claim-compliance-provider
+  - group: claim-compliance-provider-secrets
+
+
+stages:
+  - stage: Build
+    displayName: Build stage
+
+    jobs:
+      - job: build
+        displayName: Build
+        steps:
+          - checkout: self
+
+          - task: HelmInstaller@1
+            inputs:
+              helmVersionToInstall: $(helmVersion)
+
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: 17
+              jdkArchitectureOption: x64
+              jdkSourceOption: PreInstalled
+
+          - task: Maven@3
+            name: BuildJava
+            displayName: Build and package Java application
+            inputs:
+              mavenPomFile: 'pom.xml'
+              options: '-q'
+              mavenOptions: '-Xmx1024m'
+              mavenVersionOption: 'Default'
+              goals: 'clean package'
+              publishJUnitResults: 'false'
+              codeCoverageToolOption: 'None'
+
+          - task: Bash@3
+            name: SetVariables
+            displayName: Set pipeline variables
+            inputs:
+              targetType: inline
+              script: |
+                APP_VERSION=$(grep 'application.version' target/classes/application.properties | cut -d "=" -f2)
+                echo "App Version: ${APP_VERSION}"
+                ARTIFACT_VERSION=$(echo ${APP_VERSION})
+                echo "Artifact version: ${ARTIFACT_VERSION}"
+                echo "##vso[task.setvariable variable=ArtifactVersion;isoutput=true]${ARTIFACT_VERSION}"
+                echo "##vso[build.addbuildtag]${ARTIFACT_VERSION}"
+                echo "##vso[build.updatebuildnumber]${ARTIFACT_VERSION}"
+                echo "DockerImageName: $(dockerImageName)"
+              failOnStderr: true
+              noRc: false
+              workingDirectory: $(Build.SourcesDirectory)
+
+          - task: Docker@2
+            displayName: Build Docker image and push to ACR
+            inputs:
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(dockerImageName)
+              tags: |
+                $(SetVariables.ArtifactVersion)
+                latest
+              command: buildAndPush
+              Dockerfile: $(PathToDockerfile)
+              buildContext: .
+
+          - task: HelmDeploy@0
+            displayName: Pre-Check Helm deployment
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscription: '$(k8sServiceConnection)'
+              azureResourceGroup: '$(k8sResourceGroup)'
+              kubernetesCluster: '$(k8sClusterName)'
+              command: upgrade
+              namespace: $(k8sNamespace)
+              chartType: filepath
+              chartPath: $(HelmChartPath)
+              releaseName: $(k8sReleaseName)
+              install: true
+              waitForExecution: true
+              failOnStderr: true
+              arguments: '--atomic 
+                --dry-run
+                --create-namespace 
+                --set image.repository=$(acrName)/$(dockerImageName) 
+                --set image.tag=$(ArtifactVersion)
+                --set ingress.hosts[0].host=$(k8sIngressHost)
+                --set ingress.hosts[0].paths[0].path=$(k8sIngressPath)
+                --set ingress.hosts[0].paths[0].pathType=Prefix
+                --set container.main.env.FEDERATED_CATALOGUE_URL="$(k8sFederatedCatalogueServiceDnsName)"
+                --set container.main.env.SD_CREATOR_URL="$(k8sSDCreatorServiceDnsName)"
+                --set container.main.env.COMPLIANCE_SERVICE_URL="$(k8sComplianceServiceDnsName)"
+                --set keycloak.user.user="$(claim-compliance-provider-keycloak-username)"       
+                --set keycloak.user.password=string("$(claim-compliance-provider-keycloak-password)"
+                --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret)"'
+
+  - stage: Deploy
+    displayName: Deploy application
+    condition: succeeded()
+    dependsOn: Build
+    variables:
+      ArtifactVersion: $[ stageDependencies.Build.build.outputs['SetVariables.ArtifactVersion'] ]
+
+    jobs:
+      - deployment: Deploy
+        displayName: Deploy to AKS
+        environment: '$(deploymentEnvironment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: Bash@3
+                  displayName: Show stage info
+                  inputs:
+                    targetType: inline
+                    script: |
+                      echo "Deploying artifact version $(ArtifactVersion)"
+                    noRc: false
+
+                - task: HelmInstaller@1
+                  inputs:
+                    helmVersionToInstall: $(helmVersion)
+
+                - task: HelmDeploy@0
+                  displayName: Authenticate on Kubernetes
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: '$(k8sServiceConnection)'
+                    azureResourceGroup: '$(k8sResourceGroup)'
+                    kubernetesCluster: '$(k8sClusterName)'
+                    command: 'login'
+
+                - task: HelmDeploy@0
+                  displayName: Helm deployment
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: '$(k8sServiceConnection)'
+                    azureResourceGroup: '$(k8sResourceGroup)'
+                    kubernetesCluster: '$(k8sClusterName)'
+                    command: upgrade
+                    namespace: $(k8sNamespace)
+                    chartType: filepath
+                    chartPath: $(HelmChartPath)
+                    releaseName: $(k8sReleaseName)
+                    install: true
+                    waitForExecution: true
+                    failOnStderr: true
+                    arguments: '--atomic 
+                      --create-namespace 
+                      --set image.repository=$(acrName)/$(dockerImageName) 
+                      --set image.tag=$(ArtifactVersion)
+                      --set ingress.hosts[0].host=$(k8sIngressHost)
+                      --set ingress.hosts[0].paths[0].path=$(k8sIngressPath)
+                      --set ingress.hosts[0].paths[0].pathType=Prefix
+                      --set container.main.env.FEDERATED_CATALOGUE_URL="$(k8sFederatedCatalogueServiceDnsName)"
+                      --set container.main.env.SD_CREATOR_URL="$(k8sSDCreatorServiceDnsName)"
+                      --set container.main.env.COMPLIANCE_SERVICE_URL="$(k8sComplianceServiceDnsName)"
+                      --set keycloak.user.name="$(claim-compliance-provider-keycloak-username)"       
+                      --set keycloak.user.password=string("$(claim-compliance-provider-keycloak-password)"
+                      --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret)"'
