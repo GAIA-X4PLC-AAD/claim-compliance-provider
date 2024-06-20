@@ -1,14 +1,5 @@
 package com.msg.ccp;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,11 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @QuarkusTest
 @QuarkusTestResource(WireMockTestResource.class)
@@ -75,7 +66,7 @@ class SdCreatorServiceTest {
     }
 
     @Test
-    @DisplayName("IF exception is thrown inside the REST client THEN it is handled by @ClientExceptionMapper.")
+    @DisplayName("IF exception is thrown inside the REST client THEN we ge a proper error message.")
     void testExceptionHandling() {
         // Prepare
         final Map<String, Object> claims = createClaims("service3");
@@ -86,7 +77,7 @@ class SdCreatorServiceTest {
         assertThatThrownBy(() -> {
             sdCreatorService.createVCsFromClaims(Collections.singleton(claims));
         }).isInstanceOf(RuntimeException.class)
-                .hasMessage("Unknown issue calling Self Description Creator, response code: 400 message: Bad Request");
+                .hasMessage("Received: 'Bad Request, status code 400' when invoking: Rest Client method: 'com.msg.ccp.sdcreator.SdCreatorClient#postClaimsGetVCs'");
     }
 
     private Set<Map<String, Object>> createServiceOfferingClaims() {

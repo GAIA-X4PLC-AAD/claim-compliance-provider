@@ -67,7 +67,7 @@ class FederatedCatalogueServiceTest {
     @DisplayName("IF VP is invalid THEN an exception is thrown.")
     void failingVerification() throws JsonProcessingException {
         // prepare
-        ObjectMapper objectMapper = new ObjectMapper();
+        final ObjectMapper objectMapper = new ObjectMapper();
         final String jsonRequest = objectMapper.writeValueAsString(INVALID_PAYLOAD);
 
         stubFor(post(urlEqualTo("/verification"))
@@ -81,7 +81,7 @@ class FederatedCatalogueServiceTest {
         assertThatThrownBy(() -> {
             federatedCatalogueService.verify(INVALID_PAYLOAD);
         }).isInstanceOf(RuntimeException.class)
-                .hasMessage("The Federated Catalogue responded with HTTP 404");
+                .hasMessage("Received: 'Bad Request, status code 400' when invoking: Rest Client method: 'com.msg.ccp.catalogue.FederatedCatalogueClient#verification'");
     }
 
     private FederatedCatalogueResponse createFederatedCatalogueResponse() throws JsonProcessingException {
