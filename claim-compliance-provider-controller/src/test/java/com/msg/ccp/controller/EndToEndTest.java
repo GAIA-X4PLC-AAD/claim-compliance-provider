@@ -107,7 +107,7 @@ class EndToEndTest {
                         .contentType(ContentType.JSON)
                         .body(claimsAndCredentials)
                         .when()
-                        .post("/send-claims");
+                        .post("/v1/send-claims");
 
         // test
         final VerifiablePresentation resultVP = response.getBody().as(VerifiablePresentation.class);
