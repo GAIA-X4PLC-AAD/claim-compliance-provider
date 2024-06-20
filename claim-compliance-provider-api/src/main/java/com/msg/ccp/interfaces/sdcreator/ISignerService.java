@@ -1,4 +1,4 @@
-package com.msg.ccp.sdcreator;
+package com.msg.ccp.interfaces.sdcreator;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;

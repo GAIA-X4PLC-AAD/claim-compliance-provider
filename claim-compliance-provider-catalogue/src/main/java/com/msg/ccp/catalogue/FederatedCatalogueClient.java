@@ -1,6 +1,7 @@
 package com.msg.ccp.catalogue;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.msg.ccp.interfaces.catalogue.FederatedCatalogueResponse;
 import io.quarkus.rest.client.reactive.ClientExceptionMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;

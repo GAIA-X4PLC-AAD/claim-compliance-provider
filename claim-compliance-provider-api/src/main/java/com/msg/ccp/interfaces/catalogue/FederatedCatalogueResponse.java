@@ -1,4 +1,4 @@
-package com.msg.ccp.catalogue;
+package com.msg.ccp.interfaces.catalogue;
 
 import lombok.Getter;
 import lombok.Setter;

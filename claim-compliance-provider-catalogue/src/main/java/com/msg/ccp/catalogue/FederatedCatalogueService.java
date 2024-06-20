@@ -1,6 +1,8 @@
 package com.msg.ccp.catalogue;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.msg.ccp.interfaces.catalogue.FederatedCatalogueResponse;
+import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import io.quarkus.oidc.client.Tokens;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

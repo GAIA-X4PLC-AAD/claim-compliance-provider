@@ -1,5 +1,6 @@
 package com.msg.ccp.compliance;
 
+import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;

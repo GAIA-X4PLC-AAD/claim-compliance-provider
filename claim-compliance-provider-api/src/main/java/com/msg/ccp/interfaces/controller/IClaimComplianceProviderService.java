@@ -1,4 +1,4 @@
-package com.msg.ccp.controller;
+package com.msg.ccp.interfaces.controller;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;

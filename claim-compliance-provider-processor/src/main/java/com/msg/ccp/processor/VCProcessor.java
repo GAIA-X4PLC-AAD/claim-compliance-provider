@@ -2,12 +2,12 @@ package com.msg.ccp.processor;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
-import com.msg.ccp.catalogue.ICatalogueService;
+import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import com.msg.ccp.claims.ClaimsCredentialsService;
 import com.msg.ccp.claims.CredentialContainer;
-import com.msg.ccp.compliance.IComplianceServiceService;
-import com.msg.ccp.controller.IClaimComplianceProviderService;
-import com.msg.ccp.sdcreator.ISignerService;
+import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
+import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
+import com.msg.ccp.interfaces.sdcreator.ISignerService;
 import foundation.identity.jsonld.JsonLDObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

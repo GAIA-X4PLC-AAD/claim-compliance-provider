@@ -1,4 +1,4 @@
-package com.msg.ccp.compliance;
+package com.msg.ccp.interfaces.compliance;
 
 import java.util.Map;
 

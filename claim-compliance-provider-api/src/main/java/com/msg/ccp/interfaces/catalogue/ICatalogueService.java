@@ -1,4 +1,4 @@
-package com.msg.ccp.catalogue;
+package com.msg.ccp.interfaces.catalogue;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 

@@ -1,6 +1,7 @@
 package com.msg.ccp.controller;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
