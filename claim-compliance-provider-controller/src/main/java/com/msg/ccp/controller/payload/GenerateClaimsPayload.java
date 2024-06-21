@@ -1,13 +1,7 @@
 package com.msg.ccp.controller.payload;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
 public record GenerateClaimsPayload(@NotBlank String identifierPrefix, @NotBlank String legalParticipantId,
                                     @NotBlank String physicalResourceLegalParticipantId,
                                     @NotBlank String registrationNumber, @NotBlank String countryCode) {

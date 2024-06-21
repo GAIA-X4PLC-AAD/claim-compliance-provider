@@ -3,16 +3,10 @@ package com.msg.ccp.controller.payload;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Map;
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
 public record SendClaimsPayload(@NotNull @NotEmpty Set<Map<String, Object>> claims,
                                 @NotNull @NotEmpty Set<VerifiableCredential> verifiableCredentials) {
 
