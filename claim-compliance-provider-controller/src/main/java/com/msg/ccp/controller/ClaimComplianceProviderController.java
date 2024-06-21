@@ -1,6 +1,7 @@
 package com.msg.ccp.controller;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.msg.ccp.exception.ErrorResponse;
 import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -421,11 +422,45 @@ public class ClaimComplianceProviderController {
             }))
     @APIResponse(responseCode = "200", description = "Successful operation",
             content = @Content(schema = @Schema(implementation = VerifiablePresentation.class)))
+    @APIResponse(responseCode = "409", description = "Conflict",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
+                    @ExampleObject(name = "exampleErrorResponse409", value = """
+                        {
+                          "message": "The signature of the document with ID did:web:sd-creator.gxfs.gx4fm.org:id-documents:d3ebe5f7d37e44d2b2d425fb9daaa4cd cannot be validated, please check the document has not been tampered",
+                          "httpError": "Conflict",
+                          "exceptionMessage": "The signature of the document with ID did:web:sd-creator.gxfs.gx4fm.org:id-documents:d3ebeaaa4cd cannot be validated, please check the document has not been tampered",
+                          "statusCode": 409
+                        }
+                        """)
+            }))
+    @APIResponse(responseCode = "422", description = "Unprocessable Entity",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
+                    @ExampleObject(name = "exampleErrorResponse422", value = """
+                        {
+                          "message": "Value does not have shape gx:DataAccountExportShape",
+                          "httpError": "verification_error",
+                          "exceptionMessage": "Unprocessable Entity",
+                          "statusCode": 422
+                        }
+                        """)
+            }))
+    @APIResponse(responseCode = "500", description = "Internal server error",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
+                    @ExampleObject(name = "exampleErrorResponse500", value = """
+                        {
+                          "message": "NullPointerException",
+                          "httpError": "Internal server error",
+                          "exceptionMessage": "null",
+                          "statusCode": 500
+                        }
+                        """)
+            }))
     public VerifiablePresentation initiateVCProcessing(final Payload payload) {
         log.info("Initiating VC processing");
         log.debug("Payload: {}", payload);
-        VerifiablePresentation result = verifiableCredentialsProcessor.process(payload.getClaims(), payload.getVerifiableCredentials());
+        final VerifiablePresentation result = verifiableCredentialsProcessor.process(payload.getClaims(), payload.getVerifiableCredentials());
         log.info("VC processing completed");
+        log.debug("Result: {}", result);
         return result;
     }
 }

@@ -112,7 +112,6 @@ class EndToEndTest {
         // test
         final VerifiablePresentation resultVP = response.getBody().as(VerifiablePresentation.class);
         assertThat(response.getStatusCode()).isEqualTo(200);
-        // TODO test if response payload is as expected
         assertThat(resultVP.getLdProof()).isNotNull();
         assertThat(resultVP.getLdProof().getType()).isEqualTo("JsonWebSignature2020");
         @SuppressWarnings("unchecked") final List<Map<String, Object>> vcs = (List<Map<String, Object>>) resultVP.getJsonObject().get("verifiableCredential");

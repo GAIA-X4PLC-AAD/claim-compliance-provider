@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.msg.ccp.exception.RestClientException;
 import com.msg.ccp.sdcreator.SdCreatorService;
 import com.msg.ccp.wiremock.InjectWireMock;
 import com.msg.ccp.wiremock.WireMockTestResource;
@@ -71,13 +72,11 @@ class SdCreatorServiceTest {
         // Prepare
         final Map<String, Object> claims = createClaims("service3");
         stubFor(post(urlEqualTo("/vc-from-claims"))
-                .willReturn(WireMock.aResponse().withStatus(400).withBody("Bad Request")));
+                .willReturn(WireMock.aResponse().withStatus(400)));
 
         // action and test
-        assertThatThrownBy(() -> {
-            sdCreatorService.createVCsFromClaims(Collections.singleton(claims));
-        }).isInstanceOf(RuntimeException.class)
-                .hasMessage("Received: 'Bad Request, status code 400' when invoking: Rest Client method: 'com.msg.ccp.sdcreator.SdCreatorClient#postClaimsGetVCs'");
+        assertThatThrownBy(() -> sdCreatorService.createVCsFromClaims(Collections.singleton(claims))).isInstanceOf(RestClientException.class)
+                .hasMessage("An error occurred while calling the sd creator: createVCsFromClaims");
     }
 
     private Set<Map<String, Object>> createServiceOfferingClaims() {
