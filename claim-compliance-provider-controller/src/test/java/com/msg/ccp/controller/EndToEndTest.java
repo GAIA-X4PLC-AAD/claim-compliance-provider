@@ -18,7 +18,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -145,10 +144,10 @@ class EndToEndTest {
                         .post("/v1/generate-claims");
         // test
         assertThat(response.getStatusCode()).isEqualTo(200);
-        final ResponseBody body = response.getBody();
+        final String body = response.getBody().asString();
         assertThat(body).isNotNull();
         final ObjectMapper mapper = new ObjectMapper();
-        final JsonNode jsonNode = mapper.readTree(body.asString());
+        final JsonNode jsonNode = mapper.readTree(body);
         assertThat(jsonNode).isNotNull();
     }
 

@@ -373,7 +373,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<Map<String, Object>> clai
                     "type": "JsonWebSignature2020",
                     "created": "2024-06-21T23:15:31.464+02:00",
                     "proofPurpose": "assertionMethod",
-                    "verificationMethod": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag#JW2020-RSA",
+                    "verificationMethod": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag#JWK2020-RSA",
                     "jws": "eyJhbGciOiJQUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..MUqvGwsKRwS4SGxVfIS8iMoQwHiMtQlcPeP-Hm2ywiNFHTnI3IY9gon94Mib4jQJ3ExG1YISAjtCH8iidQurlEzlKz5v3frKl1gFS1p-3IWWrIGBChZ_XUZZUdPq0EQ6B-nZdaewwS8vfCtP82IFmXz-jaA0SOAxxuGXxa6xoHt3WbzAEQtEeItqS7my4BNWlSaeMKr-JCWbih-wPSy3ZpXjKwdYOo972yZYj-YP6OVtJe0iTnpazHrGjnkNZmi8tzlTuE691pQH2iM8CG5jQqG_ue38Z7YqPpUghWvpZYgJ6O8yeSqrpeJ8NrmN0NdN5wJRySOuOwzhqSuwsNP4X6yWBEo9bkEJAok0bN-9X7RQm5INUkRxk68_BHZga6lsvvLz2pqgModf2btXRHJhqUYF7Z2BsikcwzhPTnyTAms9q1AovJIx3ypDlNVOUMS24uLqBM713Z17a9qxEUC94WWpXjSXCVLe4FK-26TenYYKdWue3vtaoWDonPSnMN90XmQirvRv0YcLvBQNZ8JNFUe7Et22p8PZUeVcu-YjULRWrGgdk-kWQgCsEQraM13gHNzyKxHUgDG_pco3QIgNsbbOIdEdv8CS4mzm_NApLufRMOUIsjBf7nOe8RewebmgwPeXXqdxLo9xaBb77dwj45Cj6Y2Wjr4O4Cbp9PI9VJ8"
                   }
                 }
@@ -407,5 +407,4 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<Map<String, Object>> clai
               "statusCode": 500
             }
             """;
-
 }
