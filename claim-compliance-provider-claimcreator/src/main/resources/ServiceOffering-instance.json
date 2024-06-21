@@ -1,0 +1,59 @@
+{
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "sh": "http://www.w3.org/ns/shacl#"
+  },
+  "@id": "{serviceOfferingId}",
+  "@type": "gx:ServiceOffering",
+  "gx:dataAccountExport": {
+    "@type": "gx:dataAccountExport",
+    "gx:requestType": "API",
+    "gx:formatType": {
+      "@value": "application/json",
+      "@type": "xsd:string"
+    },
+    "gx:accessType": "digital"
+  },
+  "gx:termsAndConditions": {
+    "@type": "gx:SOTermsAndConditions",
+    "gx:hash": {
+      "@value": "d056db972da41899ed89cd3f93b8ccd59fc9314e2904af3455ce13d76a2ed99b",
+      "@type": "xsd:string"
+    },
+    "gx:URL": {
+      "@value": "https://www.msg.group/sotermsandconditions",
+      "@type": "xsd:string"
+    }
+  },
+  "gx:policy": {
+    "@value": "package access_control default allow = false  allow { input.method == GET input.path == /public } allow { input.method == \"POST\"     input.path == \"/private\"     input.user.role == \"admin\" }",
+    "@type": "xsd:string"
+  },
+  "gx:providedBy": {
+    "@id": "{legalParticipantId}",
+    "@type": "gx:LegalParticipant",
+    "gx:legalAddress": {
+      "@type": "gx:legalAddress",
+      "gx:countrySubdivisionCode": {
+        "@value": "{countrySubdivisionCode}",
+        "@type": "xsd:string"
+      }
+    },
+    "gx:legalRegistrationNumber": {
+      "@type": "gx:legalRegistrationNumber",
+      "gx:vatID": {
+        "@value": "{legalRegistrationNumber}",
+        "@type": "xsd:string"
+      }
+    },
+    "gx:headquarterAddress": {
+      "@type": "gx:legalAddress",
+      "gx:countrySubdivisionCode": {
+        "@value": "{countrySubdivisionCode}",
+        "@type": "xsd:string"
+      }
+    }
+  }
+}

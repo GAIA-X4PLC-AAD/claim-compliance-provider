@@ -1,0 +1,39 @@
+{
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "sh": "http://www.w3.org/ns/shacl#"
+  },
+  "@id": "{dataResourceId}",
+  "@type": "gx:DataResource",
+  "gx:copyrightOwnedBy": "{legalParticipantId}",
+  "gx:license": "Apache-2.0",
+  "gx:obsoleteDateTime": {
+    "@value": "{obsoleteDateTime}",
+    "@type": "xsd:dateTime"
+  },
+  "gx:exposedThrough": {
+    "@id": "{serviceOfferingId}"
+  },
+  "gx:expirationDateTime": {
+    "@value": "{expirationDateTime}",
+    "@type": "xsd:dateTime"
+  },
+  "gx:containsPII": false,
+  "gx:policy": {
+    "@value": "package access_control  default allow = false  allow {     input.method == \"GET\"     input.path == \"/public\" }  allow {     input.method == \"POST\"     input.path == \"/private\"     input.user.role == \"admin\" }",
+    "@type": "xsd:string"
+  },
+  "gx:producedBy": {
+    "@id": "{legalParticipantId}"
+  },
+  "gx:name": {
+    "@value": "Generated Data Resource",
+    "@type": "xsd:string"
+  },
+  "gx:description": {
+    "@value": "Generated description.",
+    "@type": "xsd:string"
+  }
+}
