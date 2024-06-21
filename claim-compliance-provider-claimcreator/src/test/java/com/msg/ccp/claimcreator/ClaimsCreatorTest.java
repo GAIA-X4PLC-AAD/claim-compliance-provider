@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ class ClaimsCreatorTest {
     ClaimsCreator claimsCreator;
 
     @Test
+    @DisplayName("IF claims are created THEN we have the correct amount of claims with replaces placeholders.")
     void testClaimsCreation() throws IOException {
         // prepare
         final String legalParticipantId = "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json";

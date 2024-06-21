@@ -2,11 +2,14 @@ package com.msg.ccp.controller;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.msg.ccp.claims.ClaimsCredentialsService;
+import com.msg.ccp.controller.payload.GenerateClaimsPayload;
 import com.msg.ccp.wiremock.InjectWireMock;
 import com.msg.ccp.wiremock.WireMockTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -15,6 +18,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -127,6 +131,25 @@ class EndToEndTest {
         assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/termsAndConditions.json").getLdProof()).isNotNull();
         assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/termsAndConditions.json").getLdProof().getVerificationMethod()).isEqualTo(new URI("did:web:participant.gxfs.gx4fm.org#JWK2020-RSA"));
         assertThat(id2vcMap.keySet().stream().filter(k -> k.startsWith("https://gaia-x.eu/.well-known/vcId/")).count()).isEqualTo(6);
+    }
+
+    @Test
+    @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    void testGenerateClaimsEndpoint() throws JsonProcessingException {
+        // action
+        final Response response =
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(GenerateClaimsPayload.EXAMPLE_PAYLOAD)
+                        .when()
+                        .post("/v1/generate-claims");
+        // test
+        assertThat(response.getStatusCode()).isEqualTo(200);
+        final ResponseBody body = response.getBody();
+        assertThat(body).isNotNull();
+        final ObjectMapper mapper = new ObjectMapper();
+        final JsonNode jsonNode = mapper.readTree(body.asString());
+        assertThat(jsonNode).isNotNull();
     }
 
     private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {

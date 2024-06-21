@@ -65,14 +65,12 @@ public class ClaimsCreator {
     }
 
     private InputStream getInputstream(final String resource) {
-
         // this is the path within the jar file in a running app
         InputStream input = getClass().getResourceAsStream("/resources/" + resource);
         if (input == null) {
             // this is how we load file within unit tests
             input = getClass().getClassLoader().getResourceAsStream(resource);
         }
-
         return input;
     }
 

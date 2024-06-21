@@ -1,9 +1,14 @@
 package com.msg.ccp.controller;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.msg.ccp.claimcreator.ClaimsCreator;
 import com.msg.ccp.controller.payload.GenerateClaimsPayload;
 import com.msg.ccp.controller.payload.SendClaimsPayload;
+import com.msg.ccp.exception.CcpException;
 import com.msg.ccp.exception.ErrorResponse;
 import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -101,13 +106,23 @@ public class ClaimComplianceProviderController {
                             @ExampleObject(name = "exampleErrorResponse500", value = SendClaimsPayload.EXAMPLE_RESPONSE_500)
                     }))
     })
-    public Set<String> generateClaims(final GenerateClaimsPayload payload) {
+    public JsonNode generateClaims(final GenerateClaimsPayload payload) {
         log.info("Generating Gaia-X claims");
         log.debug("GenerateClaimsPayload: {}", payload);
         final Set<String> claims = claimsCreator.createClaims(payload.legalParticipantId(), payload.physicalResourceLegalParticipantId(),
                 payload.registrationNumber(), payload.countryCode(), payload.identifierPrefix());
         log.info("Gaia-X claims generated");
         log.debug("Claims: {}", claims);
-        return claims;
+        return convertToJson(claims);
+    }
+
+    private JsonNode convertToJson(final Set<String> claims) {
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        try {
+            return mapper.readTree(String.valueOf(claims));
+        } catch (JsonProcessingException e) {
+            throw new CcpException("Error parsing the generated json strings back to json object.", e);
+        }
     }
 }
