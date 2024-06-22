@@ -77,13 +77,14 @@ public class ClaimsCreator {
     private Replacement createReplacement(final String legalParticipantId, final String physicalResourceLegalParticipantId, final String registrationNumber, final String countryCode, final String identifierPrefix) {
         final Replacement replacement = new Replacement();
         final UUID uuid = UUID.randomUUID();
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         replacement.setCountrySubdivisionCode(countryCode);
         replacement.setDataResourceId(identifierPrefix + "/data-resource/" + uuid);
-        replacement.setExpirationDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(DateTimeFormatter.ISO_DATE_TIME));
+        replacement.setExpirationDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(dateTimeFormatter));
         replacement.setInstantiatedVirtualResourceId(identifierPrefix + "/virtual-resource/" + uuid);
         replacement.setLegalParticipantId(legalParticipantId);
         replacement.setLegalRegistrationNumber(registrationNumber);
-        replacement.setObsoleteDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(DateTimeFormatter.ISO_DATE_TIME));
+        replacement.setObsoleteDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(dateTimeFormatter));
         replacement.setPhysicalResourceId(identifierPrefix + "/physical-resource/" + uuid);
         replacement.setPhysicalResourceLegalParticipantId(physicalResourceLegalParticipantId);
         replacement.setServiceAccessPointId(identifierPrefix + "/service-access-point/" + uuid);

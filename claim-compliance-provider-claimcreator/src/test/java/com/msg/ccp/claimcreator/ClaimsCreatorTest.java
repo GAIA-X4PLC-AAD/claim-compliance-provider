@@ -1,6 +1,7 @@
 package com.msg.ccp.claimcreator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -63,8 +64,8 @@ class ClaimsCreatorTest {
      */
     private void printClaims(final Set<String> claims) throws JsonProcessingException {
         final ObjectMapper objectMapper  = new ObjectMapper();
-        objectMapper.writerWithDefaultPrettyPrinter();
-        log.info("Claims: {}",  objectMapper.writeValueAsString(claims));
+        final JsonNode jsonNode = objectMapper.readTree(String.valueOf(claims));
+        log.info("Claims: {}",  jsonNode);
     }
     private int countFiles() throws IOException {
         try (final Stream<Path> files = Files.list(Paths.get("src/main/resources"))) {
