@@ -117,6 +117,7 @@ public class ClaimsCredentialsService {
     }
 
     private List<String> extractTypes(final VerifiableCredential credential) {
+        //TODO might be a List of credentialSubjects
         final Map<String, Object> claims = credential.getCredentialSubject().getJsonObject();
         return new ArrayList<>(getTypeValuesAsSet(claims));
     }
@@ -158,8 +159,8 @@ public class ClaimsCredentialsService {
         final List<String> ids = new ArrayList<>();
         if (verifiableCredentials != null) {
             verifiableCredentials.forEach(verifiableCredential -> {
-                final Map<String, Object> credentialSubject = VpVcUtil.getCredentialSubject(verifiableCredential.toMap());
-                ids.add(VpVcUtil.getId(credentialSubject));
+                final Set<Map<String, Object>> credentialSubjects = VpVcUtil.getCredentialSubjects(verifiableCredential.toMap());
+                credentialSubjects.forEach(credentialSubject -> ids.add(VpVcUtil.getId(credentialSubject)));
             });
         }
         return ids;

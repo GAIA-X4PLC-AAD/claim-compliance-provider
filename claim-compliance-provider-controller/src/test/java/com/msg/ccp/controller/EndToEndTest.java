@@ -1,6 +1,5 @@
 package com.msg.ccp.controller;
 
-import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EndToEndTest {
     @InjectWireMock
     WireMockServer wireMockServer;
+
+    private final String SERVICE_OFFERING_TYPE = "gx:ServiceOffering";
+    private final List<String> NON_SERVICE_OFFERING_TYPES = Arrays.asList("gx:ServiceOffering", "gx:LegalParticipant", "gx:legalRegistrationNumber", "gx:GaiaXTermsAndConditions");
 
     @BeforeEach
     public void setup() {
@@ -58,12 +59,23 @@ class EndToEndTest {
         @SuppressWarnings("unchecked") final List<Map<String, Object>> credentialsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("verifiableCredentials");
         @SuppressWarnings("unchecked") final List<Map<String, Object>> claimsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("claims");
         final Set<Map<String, Object>> allVerifiableCredentials = new HashSet<>(credentialsFromPayload);
+        final Set<Map<String, Object>> verifiableCredentialsServiceOffering = new HashSet<>();
+        final Set<Map<String, Object>> verifiableCredentialsResourceOffering = new HashSet<>();
 
         for (final Map<String, Object> claim : claimsFromPayload) {
             final String jsonRequest = objectMapper.writeValueAsString(claim);
             final Map<String, Object> vc = wrapWithVC(claim);
             final String jsonResponse = objectMapper.writeValueAsString(vc);
             allVerifiableCredentials.add(vc);
+            String type = VpVcUtil.getType(claim);
+            // Add to allVerifiableCredentialsServiceOffering if type is SERVICE_OFFERING_TYPE
+            if (SERVICE_OFFERING_TYPE.equals(type)) {
+                verifiableCredentialsServiceOffering.add(vc);
+            }
+            // Add to allVerifiableCredentialsResourceOffering if type is not in NON_SERVICE_OFFERING_TYPES
+            if (type != null && !NON_SERVICE_OFFERING_TYPES.contains(type)) {
+                verifiableCredentialsResourceOffering.add(vc);
+            }
             stubFor(post(urlEqualTo("/vc-from-claims"))
                     .withRequestBody(equalToJson(jsonRequest, true, false))
                     .willReturn(aResponse()
@@ -90,16 +102,39 @@ class EndToEndTest {
                         .withBody(objectMapper.writeValueAsString(complianceServiceResponse))));
         allVerifiableCredentials.add(complianceServiceResponse);
 
-        final Map<String, Object> sdCreatorResponseVpWithProof = wrapWithVPWithProof(allVerifiableCredentials);
+        final Map<String, Object> serviceOfferingVpWithProof = wrapWithVPWithProof(verifiableCredentialsServiceOffering);
+        final Map<String, Object> resourceOfferingVpWithProof = wrapWithVPWithProof(verifiableCredentialsResourceOffering);
+        final Map<String, Object> complianceCredentialVpWithProof = wrapWithVPWithProof(Set.of(complianceServiceResponse));
         stubFor(post(urlEqualTo("/vp-from-vcs"))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(allVerifiableCredentials), true, false))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(verifiableCredentialsServiceOffering), true, false))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(objectMapper.writeValueAsString(sdCreatorResponseVpWithProof))));
+                        .withBody(objectMapper.writeValueAsString(serviceOfferingVpWithProof))));
+
+        stubFor(post(urlEqualTo("/vp-from-vcs"))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(verifiableCredentialsResourceOffering), true, false))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(resourceOfferingVpWithProof))));
+
+        stubFor(post(urlEqualTo("/vp-from-vcs"))
+                .withRequestBody(matchingJsonPath("$..credentialSubject[0].type", equalTo("gx:compliance")))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(objectMapper.writeValueAsString(complianceCredentialVpWithProof))));
 
         stubFor(post(urlEqualTo("/verification"))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(sdCreatorResponseVpWithProof), true, false))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(serviceOfferingVpWithProof), true, false))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("")));
+
+        stubFor(post(urlEqualTo("/verification"))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(resourceOfferingVpWithProof), true, false))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -114,23 +149,24 @@ class EndToEndTest {
                         .post("/v1/send-claims");
 
         // test
-        final VerifiablePresentation resultVP = response.getBody().as(VerifiablePresentation.class);
+        final List<Map<String, Object>> resultVPs = response.getBody().as(List.class);
         assertThat(response.getStatusCode()).isEqualTo(200);
-        assertThat(resultVP.getLdProof()).isNotNull();
-        assertThat(resultVP.getLdProof().getType()).isEqualTo("JsonWebSignature2020");
-        @SuppressWarnings("unchecked") final List<Map<String, Object>> vcs = (List<Map<String, Object>>) resultVP.getJsonObject().get("verifiableCredential");
-        final Map<String, VerifiableCredential> id2vcMap = vcs.stream().collect(Collectors.toMap(vc -> (String) vc.get("id"), VerifiableCredential::fromMap));
-        assertThat(id2vcMap).hasSize(10)
-                .containsKey("https://participant.gxfs.gx4fm.org/.well-known/legalParticipant.json")
-                .containsKey("https://participant.gxfs.gx4fm.org/.well-known/legalRegistrationNumber.json")
-                .containsKey("https://gaia-x.eu/.well-known/complianceCredentialId")
-                .containsKey("https://participant.gxfs.gx4fm.org/.well-known/termsAndConditions.json");
-        assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/legalParticipant.json").getLdProof()).isNotNull();
-        assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/legalRegistrationNumber.json").getLdProof()).isNotNull();
-        assertThat(id2vcMap.get("https://gaia-x.eu/.well-known/complianceCredentialId").getLdProof()).isNotNull();
-        assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/termsAndConditions.json").getLdProof()).isNotNull();
-        assertThat(id2vcMap.get("https://participant.gxfs.gx4fm.org/.well-known/termsAndConditions.json").getLdProof().getVerificationMethod()).isEqualTo(new URI("did:web:participant.gxfs.gx4fm.org#JWK2020-RSA"));
-        assertThat(id2vcMap.keySet().stream().filter(k -> k.startsWith("https://gaia-x.eu/.well-known/vcId/")).count()).isEqualTo(6);
+        assertThat(resultVPs).hasSize(3);
+
+        final VerifiablePresentation resultVPServiceOffering = VerifiablePresentation.fromMap(resultVPs.get(0));
+        assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsServiceOffering = (List<Map<String, Object>>) resultVPServiceOffering.getJsonObject().get("verifiableCredential");
+        assertThat(vcsServiceOffering).hasSize(1);
+
+        final VerifiablePresentation resultVPResourceOffering = VerifiablePresentation.fromMap(resultVPs.get(1));
+        assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsResourceOffering = (List<Map<String, Object>>) resultVPResourceOffering.getJsonObject().get("verifiableCredential");
+        assertThat(vcsResourceOffering).hasSize(5);
+
+        final VerifiablePresentation resultVPCompliance = VerifiablePresentation.fromMap(resultVPs.get(2));
+        assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
+        @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsCompliance = (List<Map<String, Object>>) resultVPCompliance.getJsonObject().get("verifiableCredential");
+        assertThat(vcsCompliance).hasSize(1);
     }
 
     @Test

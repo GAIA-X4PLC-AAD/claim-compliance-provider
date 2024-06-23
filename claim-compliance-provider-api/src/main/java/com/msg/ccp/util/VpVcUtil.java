@@ -4,6 +4,7 @@ import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * util class for VP and VC.
@@ -39,8 +40,13 @@ public class VpVcUtil {
         return obtainId(map);
     }
 
-    public static Map<String, Object> getCredentialSubject(Map<String, Object> map) {
-        return (Map<String, Object>)map.get("credentialSubject");
+    public static Set<Map<String, Object>> getCredentialSubjects(Map<String, Object> map) {
+        final Object credentialSubjects = map.get("credentialSubject");
+        if (credentialSubjects instanceof Map) {
+            return Set.of((Map<String, Object>) credentialSubjects);
+        } else {
+            return (Set<Map<String, Object>>) credentialSubjects;
+        }
     }
 
     private static String obtainType(final Map<String, Object> map) {

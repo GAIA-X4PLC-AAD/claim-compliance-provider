@@ -11,6 +11,7 @@ import com.msg.ccp.controller.payload.SendClaimsPayload;
 import com.msg.ccp.exception.CcpException;
 import com.msg.ccp.exception.ErrorResponse;
 import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
+import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,7 +60,15 @@ public class ClaimComplianceProviderController {
             * will be signed and
             * checked against a __Gaia-X compliance service__ and
             * sent to a __federated catalogue instance__ (for either checking the verifiable presentation or storing it directly (depending on the implementation).
-            As a result of the processing, a verifiable presentation is created and returned to the caller. This verifiable presentation is signed by the signing implementation and can be used by the participant to prove the claims to other services.
+            
+            As a result of the processing, 3 verifiable presentation are created and returned to the caller as a list.
+            This verifiable presentations are split into 3 types of verifiable credentials:
+            * VP #1 with ServiceOffering
+            * VP #2 with everything else than ServiceOffering, LegalParticipant, LegalRegistrationNumber, GaiaXTermsAndConditions
+            * VP #3 with compliance credential.
+            
+            Note that only VPs #1 and #2 are sent to the federated catalogue.
+            All VPs are signed by the signing implementation and can be used by the participant to prove the claims to other services.
             
             >**Notes / hints**
             >* The ID of the legalParticipant `legalParticipant` credential should match the ID of participant links (e.g. `providedBy`) in the claims.
@@ -82,13 +92,16 @@ public class ClaimComplianceProviderController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
                     @ExampleObject(name = "exampleErrorResponse500", value = SendClaimsPayload.EXAMPLE_RESPONSE_500)
             }))
-    public Map<String, Object> initiateVCProcessing(final SendClaimsPayload payload) {
+    public List<Map<String, Object>> initiateVCProcessing(final SendClaimsPayload payload) {
         log.info("Initiating VC processing");
         log.debug("SendClaimsPayload: {}", payload);
-        final VerifiablePresentation result = verifiableCredentialsProcessor.process(payload.claims(), payload.verifiableCredentials());
-        log.info("VC processing completed");
+        final List<VerifiablePresentation> result = verifiableCredentialsProcessor.process(payload.claims(), payload.verifiableCredentials());
+        log.info("VC processing completed. VPs: {}", result.stream().map(VpVcUtil::getId).toList());
+
         log.debug("Result: {}", result);
-        return result.toMap();
+        return result.stream()
+                .map(VerifiablePresentation::toMap)
+                .toList();
     }
 
     @POST
