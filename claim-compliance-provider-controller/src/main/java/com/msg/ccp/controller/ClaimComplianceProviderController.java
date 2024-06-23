@@ -53,6 +53,7 @@ public class ClaimComplianceProviderController {
             The input payload contains `claims` and `verifiableCredentials`.
             * The `claims` are the data that the participant wants to sign and process with this service.
             * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__.
+            
             The claims 
             * will be signed and 
             * checked against a __Gaia-X compliance service__ and

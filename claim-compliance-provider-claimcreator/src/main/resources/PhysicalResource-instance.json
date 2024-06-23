@@ -22,5 +22,9 @@
   "gx:name": {
     "@value": "Generated PhysicalResource",
     "@type": "xsd:string"
+  },
+  "gx:description": {
+    "@value": "Generated PhysicalResource Description.",
+    "@type": "xsd:string"
   }
 }

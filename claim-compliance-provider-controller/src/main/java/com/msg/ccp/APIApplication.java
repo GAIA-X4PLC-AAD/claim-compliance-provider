@@ -10,12 +10,13 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @OpenAPIDefinition(
         tags = {
-                @Tag(name="Claim compliance provider", description="OpenAPI specification for the Claim Compliance Provider API. " +
-                        "This API provides a service for processing Gaia-X participant verifiable credentials and claims. " +
-                        "The claims will be signed and checked against a Gaia-X compliance service. In addition to that " +
-                        "a federated catalogue instance is called (for either checking the verifiable presentation or storing it " +
-                        "(depending on the implementation). " +
-                        "As a result of the processing, a list of verifiable presentations is created and returned to the caller.")
+                @Tag(name="Claim Compliance Provider", description = """
+                       OpenAPI specification for the Claim Compliance Provider API.
+                       This API provides an endpoint for processing Gaia-X participant verifiable credentials and claims
+                       in order have Gaia-X compliant and federated catalogue verified and signed claims.
+                       In addition to this there is another endpoint to create valid and correctly linked example claims for Gaia-X types.
+                       """)
+
         },
         info = @Info(
                 title="Claim Compliance Provider API",
