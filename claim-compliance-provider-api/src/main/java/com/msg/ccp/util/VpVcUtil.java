@@ -39,6 +39,10 @@ public class VpVcUtil {
         return obtainId(map);
     }
 
+    public static Map<String, Object> getCredentialSubject(Map<String, Object> map) {
+        return (Map<String, Object>)map.get("credentialSubject");
+    }
+
     private static String obtainType(final Map<String, Object> map) {
         if (map.containsKey("type")) {
             return map.get("type").toString();

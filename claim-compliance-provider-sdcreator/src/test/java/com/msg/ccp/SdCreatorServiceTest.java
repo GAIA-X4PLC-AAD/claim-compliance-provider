@@ -55,7 +55,6 @@ class SdCreatorServiceTest {
                             .withBody(jsonResponse)));
         }
 
-
         // action
         final Set<VerifiableCredential> verifiableCredentials = sdCreatorService.createVCsFromClaims(claims);
 

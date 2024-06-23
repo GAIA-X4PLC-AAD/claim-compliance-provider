@@ -1,6 +1,7 @@
 package com.msg.ccp.claims;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
@@ -106,7 +107,13 @@ public class ClaimsCredentialsService {
                 verifiableCredentialsGX.add(credential);
             }
         }
-        return CredentialContainer.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
+
+        final CredentialContainer credentialContainer = CredentialContainer.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
+        final List<String> foundIds = getDomainSpecificCredentialSubjectIdsNotExistentInGxCredentialSubjectIds(credentialContainer);
+        if (!foundIds.isEmpty()) {
+            log.warn("The following domain specific credential subject ids are not existent in the GX credential subject ids: " + foundIds);
+        }
+        return credentialContainer;
     }
 
     private List<String> extractTypes(final VerifiableCredential credential) {
@@ -138,5 +145,23 @@ public class ClaimsCredentialsService {
         return fieldsHavingPrefixes.stream()
             .map(s -> s.substring(s.indexOf(":") + 1))
             .toList();
+    }
+
+    protected List<String> getDomainSpecificCredentialSubjectIdsNotExistentInGxCredentialSubjectIds(final CredentialContainer credentialContainer) {
+        final List<String> domainSpecificIds = collectCredentialSubjectIds(credentialContainer.getVerifiableCredentialsDomain());
+        final List<String> gxIds = collectCredentialSubjectIds(credentialContainer.getVerifiableCredentialsGX());
+        domainSpecificIds.removeAll(gxIds);
+        return domainSpecificIds;
+    }
+
+    private List<String> collectCredentialSubjectIds(final Set<VerifiableCredential> verifiableCredentials) {
+        final List<String> ids = new ArrayList<>();
+        if (verifiableCredentials != null) {
+            verifiableCredentials.forEach(verifiableCredential -> {
+                final Map<String, Object> credentialSubject = VpVcUtil.getCredentialSubject(verifiableCredential.toMap());
+                ids.add(VpVcUtil.getId(credentialSubject));
+            });
+        }
+        return ids;
     }
 }

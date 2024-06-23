@@ -36,19 +36,16 @@ public class VCProcessor implements IClaimComplianceProviderService {
     }
 
     public VerifiablePresentation process(final Set<Map<String, Object>> claims, final Set<VerifiableCredential> verifiableCredentials) {
-        log.debug("ClaimsCredentialsMix has been created.");
+        log.info("Processing claims and verifiable credentials");
         final Set<VerifiableCredential> credentials = new HashSet<>(verifiableCredentials);
         credentials.addAll(this.transformClaimsToVCs(claims));
-        log.debug("Credentials have been extracted, claims have been extracted and transformed to credentials.");
 
         final CredentialContainer orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
         final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.getVerifiableCredentialsGX());
-        log.debug("ComplianceCredentials have been received.");
         final VerifiablePresentation verifiablePresentation = this.mergeVCAndCC(credentials, complianceCredential);
-        log.debug("ComplianceCredentials and VerifiableCredentials have been merged.");
 
         this.verifyWithFederatedCatalogue(verifiablePresentation);
-        log.debug("VerifiablePresentation successfully verified by the federated catalogue.");
+        log.info("Processing claims and verifiable credentials finished successfully");
         return verifiablePresentation;
     }
 

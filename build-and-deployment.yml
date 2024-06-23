@@ -108,7 +108,7 @@ stages:
                 --set container.main.env.KEYCLOAK_URL="$(k8sKeycloakServiceDnsName)"
                 --set keycloak.user.user="$(claim-compliance-provider-keycloak-username)"       
                 --set keycloak.user.password="$(claim-compliance-provider-keycloak-password)"
-                --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret)"'
+                --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret-production)"'
 
   - stage: Deploy
     displayName: Deploy application
@@ -176,4 +176,4 @@ stages:
                       --set container.main.env.KEYCLOAK_URL="$(k8sKeycloakServiceDnsName)"
                       --set keycloak.user.name="$(claim-compliance-provider-keycloak-username)"       
                       --set keycloak.user.password="$(claim-compliance-provider-keycloak-password)"
-                      --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret)"'
+                      --set keycloak.realm.client_secret="$(federated-catalogue-keycloak-realm-client-secret-production)"'
