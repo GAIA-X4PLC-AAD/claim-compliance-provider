@@ -235,7 +235,7 @@ public record GenerateClaimsPayload(@NotBlank String identifierPrefix, @NotBlank
             """;
     public static final String EXAMPLE_RESPONSE = """
             [
-              \"""" + LIST_OF_CLAIMS  + """
+              """ + LIST_OF_CLAIMS  + """
             ]
             """;
 }
