@@ -2,8 +2,7 @@
   "@context": {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "sh": "http://www.w3.org/ns/shacl#"
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   },
   "@id": "{physicalResourceId}",
   "@type": "gx:PhysicalResource",
@@ -22,10 +21,6 @@
   },
   "gx:name": {
     "@value": "Generated PhysicalResource",
-    "@type": "xsd:string"
-  },
-  "gx:description": {
-    "@value": "Generated PhysicalResource Description.",
     "@type": "xsd:string"
   }
 }

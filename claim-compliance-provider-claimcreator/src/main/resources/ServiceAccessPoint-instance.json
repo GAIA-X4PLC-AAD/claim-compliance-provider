@@ -1,8 +1,7 @@
 {
   "@context": {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
-    "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
-    "sh": "http://www.w3.org/ns/shacl#"
+    "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#"
   },
   "@id": "{serviceAccessPointId}",
   "@type": "gx:ServiceAccessPoint",

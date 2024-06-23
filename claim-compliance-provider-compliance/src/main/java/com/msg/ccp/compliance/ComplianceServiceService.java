@@ -31,7 +31,7 @@ public class ComplianceServiceService implements IComplianceServiceService {
             if (response.hasEntity()) {
                 final Map<String, Object> errorDetails = response.readEntity(Map.class);
                 throw new RestClientException(
-                        (String) errorDetails.get("message"),
+                        createMessage(errorDetails),
                         (String) errorDetails.get("error"),
                         e.getMessage(),
                         response.getStatus()
@@ -44,6 +44,15 @@ public class ComplianceServiceService implements IComplianceServiceService {
                         response.getStatus()
                 );
             }
+        }
+    }
+
+    private static String createMessage(final Map<String, Object> errorDetails) {
+        if (errorDetails.containsKey("message")) {
+            // message might be a single string or a list of strings
+            return errorDetails.get("message").toString();
+        } else {
+            return "no message from compliance service";
         }
     }
 }
