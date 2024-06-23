@@ -50,7 +50,7 @@ public class ClaimComplianceProviderController {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Initiate VC Processing", description = """
             This operation initiates the processing of **Gaia-X participant credentials** and claims.
-            The input payload contains `claims` and `verifiableCredentials`. 
+            The input payload contains `claims` and `verifiableCredentials`.
             * The `claims` are the data that the participant wants to sign and process with this service.
             * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__.
             The claims 
@@ -134,7 +134,7 @@ public class ClaimComplianceProviderController {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
             return mapper.readTree(String.valueOf(claims));
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             throw new CcpException("Error parsing the generated json strings back to json object.", e);
         }
     }

@@ -16,7 +16,7 @@ public class RestClientException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
-    public RestClientException(final String message, final String httpError, final String exceptionText, final int statusCode, String verifiablePresentationId) {
+    public RestClientException(final String message, final String httpError, final String exceptionText, final int statusCode, final String verifiablePresentationId) {
         this(message, httpError, exceptionText, statusCode);
         this.verifiablePresentationId = verifiablePresentationId;
     }
