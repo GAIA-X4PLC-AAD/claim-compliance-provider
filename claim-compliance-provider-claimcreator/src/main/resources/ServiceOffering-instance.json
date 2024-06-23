@@ -2,8 +2,7 @@
   "@context": {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "sh": "http://www.w3.org/ns/shacl#"
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   },
   "@id": "{serviceOfferingId}",
   "@type": "gx:ServiceOffering",
@@ -32,28 +31,6 @@
     "@type": "xsd:string"
   },
   "gx:providedBy": {
-    "@id": "{legalParticipantId}",
-    "@type": "gx:LegalParticipant",
-    "gx:legalAddress": {
-      "@type": "gx:legalAddress",
-      "gx:countrySubdivisionCode": {
-        "@value": "{countrySubdivisionCode}",
-        "@type": "xsd:string"
-      }
-    },
-    "gx:legalRegistrationNumber": {
-      "@type": "gx:legalRegistrationNumber",
-      "gx:vatID": {
-        "@value": "{legalRegistrationNumber}",
-        "@type": "xsd:string"
-      }
-    },
-    "gx:headquarterAddress": {
-      "@type": "gx:legalAddress",
-      "gx:countrySubdivisionCode": {
-        "@value": "{countrySubdivisionCode}",
-        "@type": "xsd:string"
-      }
-    }
+    "id": "{legalParticipantId}"
   }
 }
