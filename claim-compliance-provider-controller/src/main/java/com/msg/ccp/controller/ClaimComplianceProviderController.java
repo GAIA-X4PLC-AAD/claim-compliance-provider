@@ -110,7 +110,7 @@ public class ClaimComplianceProviderController {
         log.info("Generating Gaia-X claims");
         log.debug("GenerateClaimsPayload: {}", payload);
         final Set<String> claims = claimsCreator.createClaims(payload.legalParticipantId(), payload.physicalResourceLegalParticipantId(),
-                payload.registrationNumber(), payload.countryCode(), payload.identifierPrefix());
+                payload.identifierPrefix());
         log.info("Gaia-X claims generated");
         log.debug("Claims: {}", claims);
         return convertToJson(claims);

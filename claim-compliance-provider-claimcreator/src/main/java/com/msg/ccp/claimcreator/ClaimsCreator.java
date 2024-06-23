@@ -24,18 +24,16 @@ public class ClaimsCreator {
             "ServiceOffering-instance.json");
 
     public Set<String> createClaims(final String legalParticipantId, final String physicalResourceLegalParticipantId,
-                                    final String registrationNumber, final String countryCode, final String identifierPrefix) {
-        final Replacement replacement = createReplacement(legalParticipantId, physicalResourceLegalParticipantId, registrationNumber, countryCode, identifierPrefix);
+                                   final String identifierPrefix) {
+        final Replacement replacement = createReplacement(legalParticipantId, physicalResourceLegalParticipantId, identifierPrefix);
 
         final Set<String> fileContents = loadFileContents();
         final Set<String> replacedContent = new HashSet<>(fileContents.size());
         for (String content : fileContents) {
-            content = content.replace("{countrySubdivisionCode}", replacement.getCountrySubdivisionCode());
             content = content.replace("{dataResourceId}", replacement.getDataResourceId());
             content = content.replace("{expirationDateTime}", replacement.getExpirationDateTime());
             content = content.replace("{instantiatedVirtualResourceId}", replacement.getInstantiatedVirtualResourceId());
             content = content.replace("{legalParticipantId}", replacement.getLegalParticipantId());
-            content = content.replace("{legalRegistrationNumber}", replacement.getLegalRegistrationNumber());
             content = content.replace("{obsoleteDateTime}", replacement.getObsoleteDateTime());
             content = content.replace("{physicalResourceId}", replacement.getPhysicalResourceId());
             content = content.replace("{physicalResourceLegalParticipantId}", replacement.getPhysicalResourceLegalParticipantId());
@@ -74,16 +72,14 @@ public class ClaimsCreator {
         return input;
     }
 
-    private Replacement createReplacement(final String legalParticipantId, final String physicalResourceLegalParticipantId, final String registrationNumber, final String countryCode, final String identifierPrefix) {
+    private Replacement createReplacement(final String legalParticipantId, final String physicalResourceLegalParticipantId, final String identifierPrefix) {
         final Replacement replacement = new Replacement();
         final UUID uuid = UUID.randomUUID();
         final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        replacement.setCountrySubdivisionCode(countryCode);
         replacement.setDataResourceId(identifierPrefix + "/data-resource/" + uuid);
         replacement.setExpirationDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(dateTimeFormatter));
         replacement.setInstantiatedVirtualResourceId(identifierPrefix + "/virtual-resource/" + uuid);
         replacement.setLegalParticipantId(legalParticipantId);
-        replacement.setLegalRegistrationNumber(registrationNumber);
         replacement.setObsoleteDateTime(ZonedDateTime.now(ZoneOffset.UTC).plusMonths(9L).format(dateTimeFormatter));
         replacement.setPhysicalResourceId(identifierPrefix + "/physical-resource/" + uuid);
         replacement.setPhysicalResourceLegalParticipantId(physicalResourceLegalParticipantId);

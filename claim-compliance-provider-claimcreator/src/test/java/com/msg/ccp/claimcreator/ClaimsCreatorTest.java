@@ -31,13 +31,11 @@ class ClaimsCreatorTest {
         // prepare
         final String legalParticipantId = "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json";
         final String physicalResourceLegalParticipantId = "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json";
-        final String registrationNumber = "DE129420400";
-        final String countryCode = "DE-BY";
         final String identifierPrefix = "https://www.gaia-x4plcaad.info/claims";
 
         // action
         final Set<String> claims = claimsCreator.createClaims(legalParticipantId, physicalResourceLegalParticipantId,
-                registrationNumber, countryCode, identifierPrefix);
+                identifierPrefix);
         printClaims(claims);
 
         // assert
@@ -48,8 +46,6 @@ class ClaimsCreatorTest {
                     .doesNotContain("{dataResourceId}")
                     .doesNotContain("{serviceAccessPointId}")
                     .doesNotContain("{legalParticipantId}")
-                    .doesNotContain("{countrySubdivisionCode}")
-                    .doesNotContain("{legalRegistrationNumber}")
                     .doesNotContain("{obsoleteDateTime}")
                     .doesNotContain("{expirationDateTime}")
                     .doesNotContain("{instantiatedVirtualResourceId}")
