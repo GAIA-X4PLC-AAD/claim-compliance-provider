@@ -12,8 +12,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
         tags = {
                 @Tag(name="Claim Compliance Provider", description = """
                        OpenAPI specification for the Claim Compliance Provider API.
+                       
                        This API provides an endpoint for processing Gaia-X participant verifiable credentials and claims
                        in order have Gaia-X compliant and federated catalogue verified and signed claims.
+                                         
                        In addition to this there is another endpoint to create valid and correctly linked example claims for Gaia-X types.
                        """)
 

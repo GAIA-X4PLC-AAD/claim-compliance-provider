@@ -179,12 +179,12 @@ public record SendClaimsPayload(@NotNull Set<Map<String, Object>> claims,
                 {
                   "@context": {
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
-                    "skos": "http://www.w3.org/2004/02/skos/core#",
+                    "skos": "http://www.w3.org/2004/02/skos/core#", 
                     "trusted-cloud": "http://w3id.org/gaia-x/trusted-cloud#",
                     "gax-core": "https://w3id.org/gaia-x/core#",
                     "surveyonto": "http://semanticweb.org/metadatasurveyontology/"
                   },
-                  "@id": "https://www.gaia-x4plcaad.info/claims/service-offering/daa3d4dc-f170-44b5-bae2-fb3fad07c670",
+                  "@id": "https://www.gaia-x4plcaad.info/claims/data-resource/1081c710-ae91-4f77-b0be-ee0552eb6cb6",
                   "@type": [
                     "surveyonto:SurveyResultDataOffering"
                   ],
@@ -219,30 +219,29 @@ public record SendClaimsPayload(@NotNull Set<Map<String, Object>> claims,
                   "type": [
                     "VerifiableCredential"
                   ],
-                  "id": "https://wizard.lab.gaia-x.eu/api/credentials/Lg6BMfUw47oH9asdSS8hsj8igGjaaWdzswP5orD3nWVLsjY4raurGUPH9HsM1YYoiBNzQ5E1xLMiZBSJm3ADRPvMgW6NpLKhTrYFWviCK4vte3N4WWDTqFd3eEDSfJ2eifkSSWXLpgDDzsLatJKD7NY1dLqrN22WtS1DBhhJNnG8dyYxC8p5WTfuJ41yVrJV5tXnmho4HYBki9g3qZPQyrceHudWgbhA5usYvHgtnhvSFoS47vmPGHrZJ4g6icgZctqYp397a9smSrtCBzAPeqFzPaeVWsnmkAryqKbxstPjesuApVEnNGiqFZayV9a295wBhyaQGYR3YKHG9u6CCgE4F6JbYmaXwC2satPhi3A7yZG4HkJjj66JDyc1K8PA4YcymdFYWxAc5N32HAGMit3KiZpPPcR5jJC2PFa7BT3xRLtQ127Z12gAbhntBtsDBGBXNgQ5he249rqo17yJBdw7iTd7Y2KAedbLm7vnYNUeewiafwEmii9TrFD77uEqXCvXVeGaeAHsv4Zgnpb1zHPG3NztaVHM2hcbC3DwqtdtnYiYDAoPRHWBw4cpWzvMWHpU6AD5kfY2q6qQrPTFfakLfrUL1aauoX8yL2KQPt62ox9rz4sxkeZt6LFmxoXU8B75FUnnXvU25DZ9xQXh9q756ZRw2H1jpykWsmnbkGpA8QJ9QXZiMn9E9EuCYr135jFPTCzq5N6LeUyNRFdx8VaT6B4MM1dZ5t9fqFw3saVSp5NB2MZfyEaKMYhyakj1PNuMUg1SeZ3iHpfoQfRPt2syojbdm7Sqai3aX2vgtnBUPdopMUbd3xANQ9nn23bPR9nXjXruwRMgH2sis9oXkydasWy58FnuU9WdP6QQpKjjorbbqLCthMFeWdFJpgLYAjUxYfm7iTMA2MqBmEsK1PErm6rion13gHAbnPFQmSGgmWecMc2DiiX5GxsKqXYk3FsWvggfa7aoMLGAi6WWeixp7Po6riwEW9gsB75aNXZUMjymNLnFLqqAfGNYZjhZgjqJhCWQgGK9zfGBzmts2c4ejhZN1KjVt7bYQHgmxz8NyjvxRcCFsWfGGDUW5ktPDGQ?uid=6f348c02-1183-4527-9f50-d5fa67e01c27",
-                  "issuer": "did:web:wizard.lab.gaia-x.eu:api:credentials:Lg6BMfUw47oH9asdSS8hsj8igGjaaWdzswP5orD3nWVLsjY4raurGUPH9HsM1YYoiBNzQ5E1xLMiZBSJm3ADRPvMgW6NpLKhTrYFWviCK4vte3N4WWDTqFd3eEDSfJ2eifkSSWXLpgDDzsLatJKD7NY1dLqrN22WtS1DBhhJNnG8dyYxC8p5WTfuJ41yVrJV5tXnmho4HYBki9g3qZPQyrceHudWgbhA5usYvHgtnhvSFoS47vmPGHrZJ4g6icgZctqYp397a9smSrtCBzAPeqFzPaeVWsnmkAryqKbxstPjesuApVEnNGiqFZayV9a295wBhyaQGYR3YKHG9u6CCgE4F6JbYmaXwC2satPhi3A7yZG4HkJjj66JDyc1K8PA4YcymdFYWxAc5N32HAGMit3KiZpPPcR5jJC2PFa7BT3xRLtQ127Z12gAbhntBtsDBGBXNgQ5he249rqo17yJBdw7iTd7Y2KAedbLm7vnYNUeewiafwEmii9TrFD77uEqXCvXVeGaeAHsv4Zgnpb1zHPG3NztaVHM2hcbC3DwqtdtnYiYDAoPRHWBw4cpWzvMWHpU6AD5kfY2q6qQrPTFfakLfrUL1aauoX8yL2KQPt62ox9rz4sxkeZt6LFmxoXU8B75FUnnXvU25DZ9xQXh9q756ZRw2H1jpykWsmnbkGpA8QJ9QXZiMn9E9EuCYr135jFPTCzq5N6LeUyNRFdx8VaT6B4MM1dZ5t9fqFw3saVSp5NB2MZfyEaKMYhyakj1PNuMUg1SeZ3iHpfoQfRPt2syojbdm7Sqai3aX2vgtnBUPdopMUbd3xANQ9nn23bPR9nXjXruwRMgH2sis9oXkydasWy58FnuU9WdP6QQpKjjorbbqLCthMFeWdFJpgLYAjUxYfm7iTMA2MqBmEsK1PErm6rion13gHAbnPFQmSGgmWecMc2DiiX5GxsKqXYk3FsWvggfa7aoMLGAi6WWeixp7Po6riwEW9gsB75aNXZUMjymNLnFLqqAfGNYZjhZgjqJhCWQgGK9zfGBzmts2c4ejhZN1KjVt7bYQHgmxz8NyjvxRcCFsWfGGDUW5ktPDGQ",
-                  "issuanceDate": "2024-06-11T12:06:22.588Z",
+                  "id": "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json",
+                  "issuer": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag",
+                  "issuanceDate": "2024-06-23T17:00:18.698Z",
                   "credentialSubject": {
+                    "type": "gx:LegalParticipant",
                     "gx:legalName": "msg systems ag",
-                    "gx:headquarterAddress": {
-                      "gx:countrySubdivisionCode": "DE-BY"
-                    },
                     "gx:legalRegistrationNumber": {
                       "id": "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalRegistration.json"
+                    },
+                    "gx:headquarterAddress": {
+                      "gx:countrySubdivisionCode": "DE-BY"
                     },
                     "gx:legalAddress": {
                       "gx:countrySubdivisionCode": "DE-BY"
                     },
-                    "type": "gx:LegalParticipant",
-                    "gx-terms-and-conditions:gaiaxTermsAndConditions": "70c1d713215f95191a11d38fe2341faed27d19e083917bc8732ca4fea4976700",
                     "id": "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json"
                   },
                   "proof": {
                     "type": "JsonWebSignature2020",
-                    "created": "2024-06-21T23:06:30.694+02:00",
+                    "created": "2024-06-23T19:00:18.709+02:00",
                     "proofPurpose": "assertionMethod",
-                    "verificationMethod": "did:web:wizard.lab.gaia-x.eu:api:credentials:Lg6BMfUw47oH9asdSS8hsj8igGjaaWdzswP5orD3nWVLsjY4raurGUPH9HsM1YYoiBNzQ5E1xLMiZBSJm3ADRPvMgW6NpLKhTrYFWviCK4vte3N4WWDTqFd3eEDSfJ2eifkSSWXLpgDDzsLatJKD7NY1dLqrN22WtS1DBhhJNnG8dyYxC8p5WTfuJ41yVrJV5tXnmho4HYBki9g3qZPQyrceHudWgbhA5usYvHgtnhvSFoS47vmPGHrZJ4g6icgZctqYp397a9smSrtCBzAPeqFzPaeVWsnmkAryqKbxstPjesuApVEnNGiqFZayV9a295wBhyaQGYR3YKHG9u6CCgE4F6JbYmaXwC2satPhi3A7yZG4HkJjj66JDyc1K8PA4YcymdFYWxAc5N32HAGMit3KiZpPPcR5jJC2PFa7BT3xRLtQ127Z12gAbhntBtsDBGBXNgQ5he249rqo17yJBdw7iTd7Y2KAedbLm7vnYNUeewiafwEmii9TrFD77uEqXCvXVeGaeAHsv4Zgnpb1zHPG3NztaVHM2hcbC3DwqtdtnYiYDAoPRHWBw4cpWzvMWHpU6AD5kfY2q6qQrPTFfakLfrUL1aauoX8yL2KQPt62ox9rz4sxkeZt6LFmxoXU8B75FUnnXvU25DZ9xQXh9q756ZRw2H1jpykWsmnbkGpA8QJ9QXZiMn9E9EuCYr135jFPTCzq5N6LeUyNRFdx8VaT6B4MM1dZ5t9fqFw3saVSp5NB2MZfyEaKMYhyakj1PNuMUg1SeZ3iHpfoQfRPt2syojbdm7Sqai3aX2vgtnBUPdopMUbd3xANQ9nn23bPR9nXjXruwRMgH2sis9oXkydasWy58FnuU9WdP6QQpKjjorbbqLCthMFeWdFJpgLYAjUxYfm7iTMA2MqBmEsK1PErm6rion13gHAbnPFQmSGgmWecMc2DiiX5GxsKqXYk3FsWvggfa7aoMLGAi6WWeixp7Po6riwEW9gsB75aNXZUMjymNLnFLqqAfGNYZjhZgjqJhCWQgGK9zfGBzmts2c4ejhZN1KjVt7bYQHgmxz8NyjvxRcCFsWfGGDUW5ktPDGQ#JWK2020",
-                    "jws": "eyJhbGciOiJQUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..skHciff5ZpmVeQiFSxHiQaHasIs9d64fcO9e-tcovkGInM-1R8RjUlXGxWjC8qz3viWInEa3PSt8H8zqJ2qFnEm88Lh_KjY4Q1j6MQu5nPvWtWoCwbV4fqVdSdEigA-2Vr24bZz90eUkAaY1iiBcnE40LxmUS7m0iORAQT4puG9Eqknw306_bEhEHLSGd5U9usZHE-fHVUFfuFrJwOdcJTof2rOURRGDVq11_-okdduPp7dFgB63FGbSI8pjTfIokMKxxJvdcajHN9wts7vSutB_50q1itFrzqdXZm-6HwYwxDs_dAIxUwGJni5pfnRLeOzifRPDELNliu3zO0jSeO7weofaVLnZ5eGpfeNuW9CbSe1_2kRYOy5Xisa-qaMpR19sVkR3RicFOX3zN7D5L2SJD2zvqa2gtCIz8_CFY0n-gKPLp2PQTDy3CcFsk9gSOBUQZivhIUqOP4Rdao3x2obxj0RRMgdCif5kUrdVBnt3aUlw-eiWRESDT_-A0m_-U3TlJ_Vh0L8w2sYQH2APjmzXTAC4xwCUX_d8SToHjHsj7S7kMW08F7YshVb26nMVwFRN0-w42CycPpUZCZnZbKIm6Wr7yKhJQhS-YTFomGDnKE08CwHwbGS12S3Q9_p0aKEidDS_dZT4vNf3BhylsWyr0pk2xXxX_x7fLrgw3EA"
+                    "verificationMethod": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag#JWK2020-RSA",
+                    "jws": "eyJhbGciOiJQUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..VgwUGGuUi8ZCjFGE39mTs3GHIhVLjOVi8_ki0zUeC-2RHKFGGEJb5iehYKC9AQXOV071R7lk1uudDUCwmjwtG8LJc3ExpWnuPgRdkiybSJbGTf3b_7akHDIiMUPL0r1RFjdJBxIM_DohDqRaPQkhB7nV0e5-daOmeIexgAsXHg8xG4RSK_Lu3liw3UcwUfYRtNLn7txghpZN7EIBzcpcxhc3yc6-ZxVNZfQHq1uelz-iHwke42hd2qZ1Qfy4mZQXyfIuCvo_O0q59QGa6f6VBvdHcejFxpjLd4Vl_bMAzdPy1mLefsjLVNQPj-2Dxbt5Jvy77lqd37bR_SdU2A6DogUCycHHrqc0Bd8-Ek69Tuz5yKUaGo03sceRUoWupEXKID6gPYuPoPuZnpIIlNkc_cKYZEG-WIeK_7nd-PfQ2470hAIqz4CVu1hapVRjOxMEuANJhXCgGLwJsDJBySwJ9c7T64gYRZKq4qUaGYw8ovT_clVdeVRNhZOopduh14U9zCvRjYU8zNHPrkMsVQJIP2Jt0y0cb7uLH2SQz2JtK3zdT8IFWtiYNZFpHgWtrjsEb0BtjgvgApwGrscPOHy7k4qiou4RC2JoSKtgzmn_9ivtcemdKTcaZIzrE8qSoRrITUl2Lis0daf1kkIKzrqaP67efJoh-wUnZGYxn6VE7mM"
                   }
                 },
                 {

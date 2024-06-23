@@ -54,15 +54,15 @@ public class ClaimComplianceProviderController {
             * The `claims` are the data that the participant wants to sign and process with this service.
             * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__.
             
-            The claims 
-            * will be signed and 
+            The claims
+            * will be signed and
             * checked against a __Gaia-X compliance service__ and
             * sent to a __federated catalogue instance__ (for either checking the verifiable presentation or storing it directly (depending on the implementation).
             As a result of the processing, a verifiable presentation is created and returned to the caller. This verifiable presentation is signed by the signing implementation and can be used by the participant to prove the claims to other services.
             
             >**Notes / hints**
             >* The ID of the legalParticipant `legalParticipant` credential should match the ID of participant links (e.g. `providedBy`) in the claims.
-            >* If there is a domain specific type in the list of `claims` the ID of that type must match thd ID of the Gaia-X superclass (e.g. `DataResource`) in the claims. 
+            >* If there is a domain specific type in the list of `claims` the ID of that type must match thd ID of the Gaia-X superclass (e.g. `DataResource`) in the claims.
             """)
     @RequestBody(description = "Payload containing claims and verifiable credentials", required = true,
             content = @Content(schema = @Schema(implementation = SendClaimsPayload.class), examples = {
