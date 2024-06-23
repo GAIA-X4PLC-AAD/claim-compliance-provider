@@ -7,7 +7,6 @@
   "@id": "{serviceOfferingId}",
   "@type": "gx:ServiceOffering",
   "gx:dataAccountExport": {
-    "@type": "gx:dataAccountExport",
     "gx:requestType": "API",
     "gx:formatType": {
       "@value": "application/json",
@@ -16,7 +15,6 @@
     "gx:accessType": "digital"
   },
   "gx:termsAndConditions": {
-    "@type": "gx:SOTermsAndConditions",
     "gx:hash": {
       "@value": "d056db972da41899ed89cd3f93b8ccd59fc9314e2904af3455ce13d76a2ed99b",
       "@type": "xsd:string"
