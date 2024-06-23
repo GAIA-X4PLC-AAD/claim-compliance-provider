@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.msg.ccp.claims.ClaimsCredentialsService;
 import com.msg.ccp.controller.payload.GenerateClaimsPayload;
+import com.msg.ccp.util.VpVcUtil;
 import com.msg.ccp.wiremock.InjectWireMock;
 import com.msg.ccp.wiremock.WireMockTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -211,8 +212,7 @@ class EndToEndTest {
     }
 
     private Object retrieveType(final Map<String, Object> credentialSubject) {
-        final String typeKey = credentialSubject.containsKey("type") ? "type" : "@type";
-        return credentialSubject.get(typeKey);
+        return VpVcUtil.getType(credentialSubject);
     }
 
     private boolean isGaiaXType(final Map<String, Object> credentialSubject, final String gaiaXTypeName) {

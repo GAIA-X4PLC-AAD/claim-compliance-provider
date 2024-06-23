@@ -4,6 +4,7 @@ import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.exception.RestClientException;
 import com.msg.ccp.interfaces.catalogue.FederatedCatalogueResponse;
 import com.msg.ccp.interfaces.catalogue.ICatalogueService;
+import com.msg.ccp.util.VpVcUtil;
 import io.quarkus.oidc.client.Tokens;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -40,14 +41,16 @@ public class FederatedCatalogueService implements ICatalogueService {
                         (String) errorDetails.get("message"),
                         (String) errorDetails.get("code"),
                         e.getMessage(),
-                        response.getStatus()
+                        response.getStatus(),
+                        VpVcUtil.getId(verifiablePresentation)
                 );
             } else {
                 throw new RestClientException(
                         "An error occurred while calling the federated catalogue",
                         "Unknown error",
                         e.getMessage(),
-                        response.getStatus()
+                        response.getStatus(),
+                        VpVcUtil.getId(verifiablePresentation)
                 );
             }
         }

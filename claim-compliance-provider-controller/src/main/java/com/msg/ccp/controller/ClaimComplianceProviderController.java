@@ -48,14 +48,21 @@ public class ClaimComplianceProviderController {
     @Path("/v1/send-claims")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Initiate VC Processing", description = "This operation initiates the processing of Gaia-X participant credentials and claims. " +
-            "The claims will be signed and checked against a Gaia-X compliance service. In addition to that a federated catalogue instance is called " +
-            "(for either checking the verifiable presentation or storing it (depending on the implementation). As a result of the processing, a list of " +
-            "verifiable presentations is created and returned to the caller. The input payload contains claims and verifiable credentials. The claims are " +
-            "the data that the participant wants to sign and check with the service. " +
-            "The verifiable credentials are the participant credentials that are sent along the signed claims to the Gaia-X compliance service. " +
-            "The result verifiable presentations are signed by the signing implementation and can be used by the participant to prove the claims " +
-            "to other services.")
+    @Operation(summary = "Initiate VC Processing", description = """
+            This operation initiates the processing of **Gaia-X participant credentials** and claims.
+            The input payload contains `claims` and `verifiableCredentials`. 
+            * The `claims` are the data that the participant wants to sign and process with this service.
+            * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__.
+            The claims 
+            * will be signed and 
+            * checked against a __Gaia-X compliance service__ and
+            * sent to a __federated catalogue instance__ (for either checking the verifiable presentation or storing it directly (depending on the implementation).
+            As a result of the processing, a verifiable presentation is created and returned to the caller. This verifiable presentation is signed by the signing implementation and can be used by the participant to prove the claims to other services.
+            
+            >**Notes / hints**
+            >* The ID of the legalParticipant `legalParticipant` credential should match the ID of participant links (e.g. `providedBy`) in the claims.
+            >* If there is a domain specific type in the list of `claims` the ID of that type must match thd ID of the Gaia-X superclass (e.g. `DataResource`) in the claims. 
+            """)
     @RequestBody(description = "Payload containing claims and verifiable credentials", required = true,
             content = @Content(schema = @Schema(implementation = SendClaimsPayload.class), examples = {
                     @ExampleObject(name = "examplePayload", value = SendClaimsPayload.EXAMPLE_PAYLOAD)
@@ -87,9 +94,15 @@ public class ClaimComplianceProviderController {
     @Path("/v1/generate-claims")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Generate Gaia-X claims", description = "This operation generates claims based on the provided parameters. " +
-            "The list of entities returned is a ServiceOffering, DataResource, InstantiatedVirtualResource, PhysicalResource " +
-            "and ServiceAccessPoint.")
+    @Operation(summary = "Generate Gaia-X claims", description = """
+            This operation **generates** claims based on the provided parameters.
+            The list of entities returned contains
+            * a `ServiceOffering`,
+            * a `DataResource`,
+            * a `InstantiatedVirtualResource`,
+            * a `PhysicalResource` and
+            * a `ServiceAccessPoint`.
+            """)
     @RequestBody(description = "Claim input parameters", required = true,
             content = @Content(schema = @Schema(implementation = GenerateClaimsPayload.class), examples = {
                     @ExampleObject(name = "examplePayload", value = GenerateClaimsPayload.EXAMPLE_PAYLOAD)

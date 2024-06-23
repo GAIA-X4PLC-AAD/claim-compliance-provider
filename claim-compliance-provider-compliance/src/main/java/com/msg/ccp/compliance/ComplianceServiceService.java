@@ -2,6 +2,7 @@ package com.msg.ccp.compliance;
 
 import com.msg.ccp.exception.RestClientException;
 import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
+import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -34,14 +35,16 @@ public class ComplianceServiceService implements IComplianceServiceService {
                         createMessage(errorDetails),
                         (String) errorDetails.get("error"),
                         e.getMessage(),
-                        response.getStatus()
+                        response.getStatus(),
+                        VpVcUtil.getId(verifiablePresentationWithoutProof)
                 );
             } else {
                 throw new RestClientException(
                         "An error occurred while calling the compliance service",
                         "Unknown error",
                         e.getMessage(),
-                        response.getStatus()
+                        response.getStatus(),
+                        VpVcUtil.getId(verifiablePresentationWithoutProof)
                 );
             }
         }

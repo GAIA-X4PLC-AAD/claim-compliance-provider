@@ -4,6 +4,7 @@ import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.exception.RestClientException;
 import com.msg.ccp.interfaces.sdcreator.ISignerService;
+import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -41,7 +42,8 @@ public class SdCreatorService implements ISignerService {
                         SD_CREATOR_ERROR + "createVCsFromClaims",
                         UNKNOWN_ERROR,
                         e.getMessage(),
-                        response.getStatus()
+                        response.getStatus(),
+                        VpVcUtil.getId(claimObject)
                 );
             }
         }
@@ -58,7 +60,8 @@ public class SdCreatorService implements ISignerService {
                     SD_CREATOR_ERROR + "createVPfromVCs",
                     UNKNOWN_ERROR,
                     e.getMessage(),
-                    response.getStatus()
+                    response.getStatus(),
+                    "unknown"
             );
         }
     }
@@ -73,7 +76,8 @@ public class SdCreatorService implements ISignerService {
                     SD_CREATOR_ERROR + "createVPwithoutProofFromVCs",
                     UNKNOWN_ERROR,
                     e.getMessage(),
-                    response.getStatus()
+                    response.getStatus(),
+                    "unknown"
             );
         }
     }

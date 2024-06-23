@@ -1,5 +1,5 @@
 package com.msg.ccp.exception;
 
-public record ErrorResponse(String message, String httpError, String exceptionMessage, int statuscode) {
+public record ErrorResponse(String message, String httpError, String exceptionMessage, int statuscode, String verifiablePresentationId) {
 
 }

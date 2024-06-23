@@ -12,7 +12,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Exception> {
     public Response toResponse(final Exception exception) {
         log.error("An error occurred", exception);
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(new ErrorResponse(exception.toString(), "Internal Server Error", exception.getMessage(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()))
+                .entity(new ErrorResponse(exception.toString(), "Internal Server Error", exception.getMessage(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "unknown"))
                 .build();
     }
 }

@@ -19,6 +19,11 @@
   <dependencies>
     <dependency>
       <groupId>group.msg.ccp</groupId>
+      <artifactId>claim-compliance-provider-api</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>group.msg.ccp</groupId>
       <artifactId>claim-compliance-provider-processor</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
@@ -28,5 +33,4 @@
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
 </project>

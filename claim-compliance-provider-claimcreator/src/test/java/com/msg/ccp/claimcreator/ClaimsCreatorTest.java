@@ -65,7 +65,7 @@ class ClaimsCreatorTest {
     }
     private int countFiles() throws IOException {
         try (final Stream<Path> files = Files.list(Paths.get("src/main/resources"))) {
-            return (int) files.count();
+            return (int) files.filter(path -> path.toString().endsWith(".json")).count();
         }
     }
 }
