@@ -2,6 +2,7 @@ package com.msg.ccp.catalogue;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.msg.ccp.exception.RestClientException;
@@ -17,6 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,9 +31,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @QuarkusTestResource(OidcWiremockTestResource.class)
 @QuarkusTestResource(WireMockTestResource.class)
 class FederatedCatalogueServiceTest {
-    private static final String PRESENTATION_200 = "presentationReturning200";
     private static final String PRESENTATION_400 = "presentationReturning400";
-    private static final VerifiablePresentation VALID_PAYLOAD = VerifiablePresentation.fromMap(Maps.of(PRESENTATION_200, PRESENTATION_200));
     private static final VerifiablePresentation INVALID_PAYLOAD = VerifiablePresentation.fromMap(Maps.of(PRESENTATION_400, PRESENTATION_400));
 
     @InjectWireMock
@@ -43,10 +47,11 @@ class FederatedCatalogueServiceTest {
 
     @Test
     @DisplayName("IF VP is valid THEN request is successful.")
-    void successfulVerification() throws JsonProcessingException {
+    void successfulVerification() throws IOException {
         // prepare
         final ObjectMapper objectMapper = new ObjectMapper();
-        final String jsonRequest = objectMapper.writeValueAsString(VALID_PAYLOAD);
+        final String jsonRequest = readPayload();
+        final Map<String, Object> jsonRequestAsMap = objectMapper.readValue(jsonRequest, new TypeReference<>() {});
         final String jsonResponse = objectMapper.writeValueAsString(createFederatedCatalogueResponse());
 
         stubFor(post(urlEqualTo("/verification"))
@@ -57,11 +62,15 @@ class FederatedCatalogueServiceTest {
                         .withBody(jsonResponse)));
 
         // action
-        final FederatedCatalogueResponse response = federatedCatalogueService.verify(VALID_PAYLOAD);
+        final FederatedCatalogueResponse response = federatedCatalogueService.verify(VerifiablePresentation.fromMap(jsonRequestAsMap));
 
         // test
         assertThat(response).isNotNull();
         assertThat(response.getLifecycleStatus()).isEqualTo("active");
+    }
+
+    private String readPayload() throws IOException {
+        return Files.readString(Path.of("src/test/resources/validPayload.json"));
     }
 
     @Test

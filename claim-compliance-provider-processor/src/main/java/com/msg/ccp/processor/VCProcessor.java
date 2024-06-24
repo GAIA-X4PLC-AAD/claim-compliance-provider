@@ -88,7 +88,6 @@ public class VCProcessor implements IClaimComplianceProviderService {
         final List<VerifiablePresentation> presentationsToVerify = verifiablePresentations.subList(0, verifiablePresentations.size() - 1);
         //TODO: refactor this to make it clear that we do not need to verify ComplianceCredentialVP
         for (final VerifiablePresentation verifiablePresentation : presentationsToVerify) {
-            log.info("Verifying verifiable presentation with id {}", VpVcUtil.getId(verifiablePresentation));
             this.federatedCatalogueService.verify(verifiablePresentation);
         }
     }

@@ -179,7 +179,7 @@ public record SendClaimsPayload(@NotNull Set<Map<String, Object>> claims,
                 {
                   "@context": {
                     "xsd": "http://www.w3.org/2001/XMLSchema#",
-                    "skos": "http://www.w3.org/2004/02/skos/core#", 
+                    "skos": "http://www.w3.org/2004/02/skos/core#",
                     "trusted-cloud": "http://w3id.org/gaia-x/trusted-cloud#",
                     "gax-core": "https://w3id.org/gaia-x/core#",
                     "surveyonto": "http://semanticweb.org/metadatasurveyontology/"

@@ -40,7 +40,7 @@ public class VpVcUtil {
         return obtainId(map);
     }
 
-    public static Set<Map<String, Object>> getCredentialSubjects(Map<String, Object> map) {
+    public static Set<Map<String, Object>> getCredentialSubjects(final Map<String, Object> map) {
         final Object credentialSubjects = map.get("credentialSubject");
         if (credentialSubjects instanceof Map) {
             return Set.of((Map<String, Object>) credentialSubjects);

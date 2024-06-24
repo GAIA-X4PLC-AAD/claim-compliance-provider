@@ -22,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -51,7 +50,7 @@ class EndToEndTest {
 
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class)
-    void testSendClaimsEndpoint() throws IOException, URISyntaxException {
+    void testSendClaimsEndpoint() throws IOException {
         // prepare
         final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -66,8 +65,8 @@ class EndToEndTest {
             final String jsonRequest = objectMapper.writeValueAsString(claim);
             final Map<String, Object> vc = wrapWithVC(claim);
             final String jsonResponse = objectMapper.writeValueAsString(vc);
+            final String type = VpVcUtil.getType(claim);
             allVerifiableCredentials.add(vc);
-            String type = VpVcUtil.getType(claim);
             // Add to allVerifiableCredentialsServiceOffering if type is SERVICE_OFFERING_TYPE
             if (SERVICE_OFFERING_TYPE.equals(type)) {
                 verifiableCredentialsServiceOffering.add(vc);

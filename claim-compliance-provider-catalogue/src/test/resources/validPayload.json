@@ -1,0 +1,73 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1"
+  ],
+  "type": [
+    "VerifiablePresentation"
+  ],
+  "holder": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag",
+  "verifiableCredential": [
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+      ],
+      "credentialSubject": {
+        "@context": {
+          "gx": "https://registry.lab.gaia-x.eu/development/api/trusted-shape-registry/v1/shapes/jsonld/trustframework#",
+          "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+          "xsd": "http://www.w3.org/2001/XMLSchema#"
+        },
+        "@id": "https://www.gaia-x4plcaad.info/claims/service-offering/1081c710-ae91-4f77-b0be-ee0552eb6cb6",
+        "@type": "gx:ServiceOffering",
+        "gx:dataAccountExport": {
+          "gx:accessType": "digital",
+          "gx:formatType": {
+            "@type": "xsd:string",
+            "@value": "application/json"
+          },
+          "gx:requestType": "API"
+        },
+        "gx:policy": {
+          "@type": "xsd:string",
+          "@value": "package access_control default allow = false  allow { input.method == \"GET\" input.path == /public } allow { input.method == \"POST\"     input.path == \"/private\"     input.user.role == \"admin\" }"
+        },
+        "gx:providedBy": {
+          "id": "https://participant.gxfs.gx4fm.org/msg-systems-ag/legalParticipant.json"
+        },
+        "gx:termsAndConditions": {
+          "gx:URL": {
+            "@type": "xsd:string",
+            "@value": "https://www.msg.group/sotermsandconditions"
+          },
+          "gx:hash": {
+            "@type": "xsd:string",
+            "@value": "d056db972da41899ed89cd3f93b8ccd59fc9314e2904af3455ce13d76a2ed99b"
+          }
+        }
+      },
+      "expirationDate": "2024-12-09T11:12:48Z",
+      "id": "did:web:sd-creator.gxfs.gx4fm.org:id-documents:23b5169f099540d7b60602b9ef4151b5",
+      "issuanceDate": "2024-06-24T11:12:48Z",
+      "issuer": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag",
+      "proof": {
+        "created": "2024-06-24T11:12:48Z",
+        "jws": "eyJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdLCJhbGciOiJQUzI1NiJ9..ZdUyNpzYeZFCTCHiHhVeYULzJIq5iyrLUvudBkkOv9upWkfiBDRABODR-5QyTwRWA9uzxHQByxrTcEaqI16fGxcEXKKQqk6am8fjViYTCBshovUBMiUblNGLnuaheHLHD5VBfVPdCwVqu0BV6GAUEt0e3gQmoKcpWAaGOMOvsTXxdtvqhJymxCUE27Qi8cKLV-ZuNNfFakp-fVv2GwgOuqa2jzsQObtO_SPggNkBbQMXojVWJjGGwkEGirxknZ0xVfjPRZ2BqaRUC34a-LZJoJOUtueewFnUHMJlrdgOOgtEZ-ktugWRG38TR00IxZ7mer2hxTPE88t6qdGAhn0AYbZHU3tB9wAjFv02DDDVFoAtuWIsWvhvFocy2mdn5NgnyTsEhbK8JsPCKRke4yUEwKIaA63xcllM0DZlTkNqxeLne-vM8vEEy0QNfhmTsf6ZXEgml_iBopO8eVuzSbvrV0tTL7C9T22Q88nyN_pRtufRKR2dG5v56CuB4f-j2JYORizZ-thk-MDjd-K4YOfhyiJtS1PP5K2Tmly9yHqFvnJhpACEzflvW0IfFLYhW-rzrvYkJfig60jC-X-RCf__vBFrEc0UH-RfjjTpdm-AsPWzRC9ZnGs3GV42uSdb_E2HsZhM-W-AI6M4m3NvFE1JShn_i-xhGLjj1RFNg2QWqBE",
+        "proofPurpose": "assertionMethod",
+        "type": "JsonWebSignature2020",
+        "verificationMethod": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag#JWK2020-RSA"
+      },
+      "type": [
+        "VerifiableCredential"
+      ]
+    }
+  ],
+  "id": "did:web:sd-creator.gxfs.gx4fm.org:id-documents:3b5e5bc5044d444d823401f818537740",
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "created": "2024-06-24T11:12:59Z",
+    "verificationMethod": "did:web:participant.gxfs.gx4fm.org:msg-systems-ag#JWK2020-RSA",
+    "proofPurpose": "assertionMethod",
+    "jws": "eyJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdLCJhbGciOiJQUzI1NiJ9..RgOI-p4BHr1NMkQYspSJZTPWH1KekNOIbgZJU6Z5-a1lMJl2ZZ83yTvX1jcwLxwz4DLq4eNES8lvEP4RAY0dlVbfED_HJCZ7PkR_ufc3yupPsq1Wj1o-lAFWqbGSXFiK6epCZbG8oKhQ13_MRzG1-WTLqZgPzeOLEyrHaAo-nP1M6ao4QhCdpDBDvW3p3gcB0MAWYbbhtizqsABRt5WUeRsbP-Q7KqrzvrAPC2vNszBYrOxv1kbVHrzUQRRaMqtj3uk6XuyVaTDP9eUusbSGkbBscmZH9cdOogyGyA1RPcFJoYOUihYPAWuK_1tnqNWsSuiekeM7Rh9OedzyENzSwlUWBuTwFIL_hKSvldfwPC1g7o9VpweU8f8R-Punbq2dIOquVtQns68ygcnaSyzAp7olM9z__zoluwzHpEf3cO8F5hhQmDdFuQD1mh9tk8G17aw-vGm6eIHSThU8R223d0Mu7_wC3M_mmeN67VULuWqyfY3z8sLN-aINavcRFM_1g9YPAYAiphV-zLF-e7Uh9vHX9vmG4rwHUWdjnktlIlrlSDIRfVDr4e-Pz7p2gxQoZ1l_LkxQZuQNn7LYa0w9Ybq5oxVQe_-Bx-UyzgJ7__iFGLpPaKPIJjcQXGbiCFyl33W-WTvQP9bD6Kkmps8oDF8o_x-LX5IsMYfObvqLSLg"
+  }
+}
