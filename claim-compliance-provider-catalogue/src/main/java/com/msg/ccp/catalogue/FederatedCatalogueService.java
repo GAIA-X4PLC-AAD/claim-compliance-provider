@@ -32,6 +32,7 @@ public class FederatedCatalogueService implements ICatalogueService {
         final String accessToken = tokens.getAccessToken();
 
         log.info("call federated catalogue with {}", VpVcUtil.getId(verifiablePresentation));
+        log.info("acces tkn: {}", accessToken);
         try {
             return federatedCatalogueClient.verification(accessToken, verifiablePresentation);
         } catch (final WebApplicationException e) {
