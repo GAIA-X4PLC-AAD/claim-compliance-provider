@@ -34,22 +34,35 @@ public class FederatedCatalogueService implements ICatalogueService {
         try {
             return federatedCatalogueClient.verification(accessToken, verifiablePresentation);
         } catch (final WebApplicationException e) {
-            final Response response = e.getResponse();
-            if (response.hasEntity()) {
-                final Map<String, Object> errorDetails = response.readEntity(Map.class);
-                throw new RestClientException(
-                        (String) errorDetails.get("message"),
-                        (String) errorDetails.get("code"),
-                        e.getMessage(),
-                        response.getStatus(),
-                        VpVcUtil.getId(verifiablePresentation)
-                );
-            } else {
+            try {
+                final Response response = e.getResponse();
+                if (response.hasEntity()) {
+                    final Map<String, Object> errorDetails = response.readEntity(Map.class);
+                    throw new RestClientException(
+                            (String) errorDetails.get("message"),
+                            (String) errorDetails.get("code"),
+                            e.getMessage(),
+                            response.getStatus(),
+                            VpVcUtil.getId(verifiablePresentation)
+                    );
+                } else {
+                    throw new RestClientException(
+                            "An error occurred while calling the federated catalogue",
+                            "Unknown error",
+                            e.getMessage(),
+                            response.getStatus(),
+                            VpVcUtil.getId(verifiablePresentation)
+                    );
+                }
+            } catch (final Exception ex) {
+                // needed because there seems to be a bug in the Deserialization of the error response
+                // if bug is identified this can be removed.
+                log.error("Error while deserializing(?) error response", e);
                 throw new RestClientException(
                         "An error occurred while calling the federated catalogue",
                         "Unknown error",
                         e.getMessage(),
-                        response.getStatus(),
+                        Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                         VpVcUtil.getId(verifiablePresentation)
                 );
             }
