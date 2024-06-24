@@ -7,13 +7,13 @@
   "@id": "{physicalResourceId}",
   "@type": "gx:PhysicalResource",
   "gx:maintainedBy": {
-    "@id": "{physicalResourceLegalParticipantId}"
+    "id": "{physicalResourceLegalParticipantId}"
   },
   "gx:ownedBy": {
-    "@id": "{physicalResourceLegalParticipantId}"
+    "id": "{physicalResourceLegalParticipantId}"
   },
   "gx:manufacturedBy": {
-    "@id": "{physicalResourceLegalParticipantId}"
+    "id": "{physicalResourceLegalParticipantId}"
   },
   "gx:location": {
     "@value": "DE",

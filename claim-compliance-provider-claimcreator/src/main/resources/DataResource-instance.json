@@ -13,7 +13,7 @@
     "@type": "xsd:dateTime"
   },
   "gx:exposedThrough": {
-    "@id": "{serviceOfferingId}"
+    "id": "{serviceOfferingId}"
   },
   "gx:expirationDateTime": {
     "@value": "{expirationDateTime}",
@@ -25,7 +25,7 @@
     "@type": "xsd:string"
   },
   "gx:producedBy": {
-    "@id": "{legalParticipantId}"
+    "id": "{legalParticipantId}"
   },
   "gx:name": {
     "@value": "Generated Data Resource",

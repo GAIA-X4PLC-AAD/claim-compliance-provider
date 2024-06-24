@@ -6,18 +6,18 @@
   "@id": "{instantiatedVirtualResourceId}",
   "@type": "gx:InstantiatedVirtualResource",
   "gx:maintainedBy": {
-    "@id": "{legalParticipantId}"
+    "id": "{legalParticipantId}"
   },
   "gx:hostedOn": {
-    "@id": "{physicalResourceId}"
+    "id": "{physicalResourceId}"
   },
   "gx:instanceOf": {
-    "@id": "{dataResourceId}"
+    "id": "{dataResourceId}"
   },
   "gx:tenantOwnedBy": {
-    "@id": "{legalParticipantId}"
+    "id": "{legalParticipantId}"
   },
   "gx:serviceAccessPoint": {
-    "@id": "{serviceAccessPointId}"
+    "id": "{serviceAccessPointId}"
   }
 }
