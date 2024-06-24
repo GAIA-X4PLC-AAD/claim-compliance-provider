@@ -28,14 +28,12 @@ public class FederatedCatalogueService implements ICatalogueService {
     }
 
     public FederatedCatalogueResponse verify(final VerifiablePresentation verifiablePresentation) {
-        log.info("call federated catalogue");
+        log.info("call federated catalogue with {}", VpVcUtil.getId(verifiablePresentation));
 
         final String accessToken = tokens.getAccessToken();
         try {
-            return federatedCatalogueClient.verification(accessToken, verifiablePresentation);
+            return federatedCatalogueClient.verification(accessToken, verifiablePresentation.toMap());
         } catch (final WebApplicationException e) {
-            // temporary logging to find if there is a problem with the response
-            log.warn("An error occurred while calling the federated catalogue", e);
             final Response response = e.getResponse();
             if (response.hasEntity()) {
                 final Map<String, Object> errorDetails = response.readEntity(Map.class);
