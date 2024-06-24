@@ -188,7 +188,7 @@ public record SendClaimsPayload(@NotNull Set<Map<String, Object>> claims,
                     "gax-core": "https://w3id.org/gaia-x/core#",
                     "surveyonto": "http://semanticweb.org/metadatasurveyontology/"
                   },
-                  "@id": "https://www.gaia-x4plcaad.info/claims/data-resource/1081c710-ae91-4f77-b0be-ee0552eb6cb6",
+                  "@id": "https://www.gaia-x4plcaad.info/claims/data-resource/25929d5f-a577-475c-aab8-aa05c65e8d1c",
                   "@type": [
                     "surveyonto:SurveyResultDataOffering"
                   ],
