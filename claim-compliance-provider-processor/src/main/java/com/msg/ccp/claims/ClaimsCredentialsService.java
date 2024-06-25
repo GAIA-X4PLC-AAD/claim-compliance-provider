@@ -108,7 +108,7 @@ public class ClaimsCredentialsService {
             }
         }
 
-        final CredentialContainer credentialContainer = CredentialContainer.builder().verifiableCredentialsGX(verifiableCredentialsGX).verifiableCredentialsDomain(verifiableCredentialsDomain).build();
+        final CredentialContainer credentialContainer = new CredentialContainer(verifiableCredentialsDomain, verifiableCredentialsGX);
         final List<String> foundIds = getDomainSpecificCredentialSubjectIdsNotExistentInGxCredentialSubjectIds(credentialContainer);
         if (!foundIds.isEmpty()) {
             log.warn("The following domain specific credential subject ids are not existent in the GX credential subject ids: " + foundIds);
@@ -149,8 +149,8 @@ public class ClaimsCredentialsService {
     }
 
     protected List<String> getDomainSpecificCredentialSubjectIdsNotExistentInGxCredentialSubjectIds(final CredentialContainer credentialContainer) {
-        final List<String> domainSpecificIds = collectCredentialSubjectIds(credentialContainer.getVerifiableCredentialsDomain());
-        final List<String> gxIds = collectCredentialSubjectIds(credentialContainer.getVerifiableCredentialsGX());
+        final List<String> domainSpecificIds = collectCredentialSubjectIds(credentialContainer.verifiableCredentialsDomain());
+        final List<String> gxIds = collectCredentialSubjectIds(credentialContainer.verifiableCredentialsGX());
         domainSpecificIds.removeAll(gxIds);
         return domainSpecificIds;
     }

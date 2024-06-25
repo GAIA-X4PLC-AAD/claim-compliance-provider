@@ -61,10 +61,7 @@ class ClaimsCredentialsServiceTest {
             gxVCs.add(createVerifiableCredential(id));
         }
 
-        return CredentialContainer.builder()
-                .verifiableCredentialsDomain(domainSpecificVCs)
-                .verifiableCredentialsGX(gxVCs)
-                .build();
+        return new CredentialContainer(domainSpecificVCs, gxVCs);
     }
 
     private VerifiableCredential createVerifiableCredential(final String id) {

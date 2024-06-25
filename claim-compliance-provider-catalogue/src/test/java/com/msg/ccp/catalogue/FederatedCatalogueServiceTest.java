@@ -66,7 +66,7 @@ class FederatedCatalogueServiceTest {
 
         // test
         assertThat(response).isNotNull();
-        assertThat(response.getLifecycleStatus()).isEqualTo("active");
+        assertThat(response.lifecycleStatus()).isEqualTo("active");
     }
 
     private String readPayload() throws IOException {

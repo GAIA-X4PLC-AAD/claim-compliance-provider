@@ -41,7 +41,7 @@ public class VCProcessor implements IClaimComplianceProviderService {
         credentials.addAll(this.transformClaimsToVCs(claims));
 
         final CredentialContainer orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
-        final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.getVerifiableCredentialsGX());
+        final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.verifiableCredentialsGX());
         final List<VerifiablePresentation> verifiablePresentations = this.splitVCsAndCreateVPs(credentials, complianceCredential);
 
         this.verifyWithFederatedCatalogue(verifiablePresentations);

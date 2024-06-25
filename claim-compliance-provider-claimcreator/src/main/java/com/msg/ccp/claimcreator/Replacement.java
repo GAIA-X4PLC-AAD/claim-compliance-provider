@@ -1,19 +1,7 @@
 package com.msg.ccp.claimcreator;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class Replacement {
-    private String dataResourceId;
-    private String expirationDateTime;
-    private String instantiatedVirtualResourceId;
-    private String legalParticipantId;
-    private String obsoleteDateTime;
-    private String physicalResourceId;
-    private String physicalResourceLegalParticipantId;
-    private String serviceAccessPointId;
-    private String serviceOfferingId;
+public record Replacement (String dataResourceId, String expirationDateTime, String instantiatedVirtualResourceId, String legalParticipantId,
+                           String obsoleteDateTime, String physicalResourceId, String physicalResourceLegalParticipantId, String serviceAccessPointId,
+                           String serviceOfferingId) {
 }
 

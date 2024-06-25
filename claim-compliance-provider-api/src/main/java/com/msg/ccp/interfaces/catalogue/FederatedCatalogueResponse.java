@@ -1,17 +1,7 @@
 package com.msg.ccp.interfaces.catalogue;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-@Getter
-@Setter
-public class FederatedCatalogueResponse {
-        private String verificationTimestamp;
-        private String lifecycleStatus;
-        private String issuer;
-        private String issuedDateTime;
-        List<String> validatorDids = new ArrayList<>();
+public record FederatedCatalogueResponse(String verificationTimestamp, String lifecycleStatus, String issuer, String issuedDateTime, List<String> validatorDids) implements Serializable {
 }
