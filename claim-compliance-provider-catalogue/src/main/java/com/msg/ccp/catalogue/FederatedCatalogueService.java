@@ -66,7 +66,7 @@ public class FederatedCatalogueService implements ICatalogueService {
         Set<Map<String, Object>> configs = new LinkedHashSet<>();
         Map<String, Object> property1 = new LinkedHashMap<>();
         property1.put(KEY_PROPERTY, "FEDERATED_CATALOGUE_URL");
-        property1.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.sdcreator.SdCreatorClient\".url", String.class));
+        property1.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.catalogue.FederatedCatalogueClient\".url", String.class));
         configs.add(property1);
         Map<String, Object> property2 = new LinkedHashMap<>();
         property2.put(KEY_PROPERTY, "KEYCLOAK_URL");
