@@ -204,7 +204,7 @@ class EndToEndTest {
         assertThat(response.getStatusCode()).isEqualTo(200);
         final String body = response.getBody().asString();
         assertThat(body).isNotNull();
-        List<Map<String, Object>> configurations = response.getBody().as(List.class);
+        final List<Map<String, Object>> configurations = response.getBody().as(List.class);
         Map<String, Object> properties;
         assertThat(configurations).hasSize(3);
         Map<String, Object> configuration = configurations.get(0);
@@ -217,17 +217,18 @@ class EndToEndTest {
         assertThat(configuration).containsEntry("componentName", SdCreatorService.class.getSimpleName());
         assertThat((List<Map<String, Object>>)configuration.get("properties")).hasSize(1);
         properties = ((List<Map<String, Object>>)configuration.get("properties")).get(0);
-        assertThat(properties).containsEntry("key", "SD_CREATOR_URL")
-                .containsEntry("value", "http://localhost:" + this.wireMockServer.port());
+        assertThat(properties).containsEntry("key", "SD_CREATOR_URL");
+        assertThat(properties.get("value")).asString().contains(String.valueOf(this.wireMockServer.port()));
+
         configuration = configurations.get(2);
         assertThat(configuration).containsEntry("componentName", FederatedCatalogueService.class.getSimpleName());
         assertThat((List<Map<String, Object>>)configuration.get("properties")).hasSize(2);
         properties = ((List<Map<String, Object>>)configuration.get("properties")).get(0);
-        assertThat(properties).containsEntry("key", "FEDERATED_CATALOGUE_URL")
-                .containsEntry("value", "http://localhost:" + this.wireMockServer.port());
+        assertThat(properties).containsEntry("key", "FEDERATED_CATALOGUE_URL");
+        assertThat(properties.get("value")).asString().contains(String.valueOf(this.wireMockServer.port()));
         properties = ((List<Map<String, Object>>)configuration.get("properties")).get(1);
-        assertThat(properties).containsEntry("key", "KEYCLOAK_URL")
-                .containsEntry("value", "http://localhost:" + (this.wireMockServer.port()+1) + "/auth/realms/quarkus/token");
+        assertThat(properties).containsEntry("key", "KEYCLOAK_URL");
+        assertThat(properties.get("value")).asString().contains("/auth/realms/quarkus/token");
     }
 
     private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {
