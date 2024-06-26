@@ -7,6 +7,7 @@ import com.msg.ccp.claims.CredentialContainer;
 import com.msg.ccp.exception.CcpException;
 import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
+import com.msg.ccp.interfaces.config.IServiceConfiguration;
 import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import com.msg.ccp.interfaces.sdcreator.ISignerService;
 import com.msg.ccp.util.VpVcUtil;
@@ -22,10 +23,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class VCProcessor implements IClaimComplianceProviderService {
 
+    private static final String COMPONENT_NAME_PROPERTY = "componentName";
+    private static final String COMPONENT_PROPERTIES_PROPERTY = "properties";
+
     private final IComplianceServiceService complianceService;
     private final ISignerService sdCreatorService;
     private final ICatalogueService federatedCatalogueService;
     private final ClaimsCredentialsService claimsCredentialsService;
+
+    private final List<IServiceConfiguration> serviceConfigurations = new ArrayList<>();
 
     @Inject
     public VCProcessor(final IComplianceServiceService complianceService, final ISignerService sdCreatorService, final ICatalogueService federatedCatalogueService, final ClaimsCredentialsService claimsCredentialsService) {
@@ -33,6 +39,9 @@ public class VCProcessor implements IClaimComplianceProviderService {
         this.sdCreatorService = sdCreatorService;
         this.federatedCatalogueService = federatedCatalogueService;
         this.claimsCredentialsService = claimsCredentialsService;
+        this.serviceConfigurations.add(complianceService);
+        this.serviceConfigurations.add(sdCreatorService);
+        this.serviceConfigurations.add(federatedCatalogueService);
     }
 
     public List<VerifiablePresentation> process(final Set<Map<String, Object>> claims, final Set<VerifiableCredential> verifiableCredentials) {
@@ -47,6 +56,17 @@ public class VCProcessor implements IClaimComplianceProviderService {
         this.verifyWithFederatedCatalogue(verifiablePresentations);
         log.info("Processing claims and verifiable credentials finished successfully");
         return verifiablePresentations;
+    }
+
+    public Set<Map<String, Object>> getConfig() {
+        final Set<Map<String, Object>> componentConfigs = new LinkedHashSet<>();
+        this.serviceConfigurations.forEach(sc -> {
+            Map<String, Object> componentConfig = new HashMap<>();
+            componentConfig.put(COMPONENT_NAME_PROPERTY, sc.getClass().getSuperclass().getSimpleName());
+            componentConfig.put(COMPONENT_PROPERTIES_PROPERTY, sc.getConfig());
+            componentConfigs.add(componentConfig);
+        });
+        return componentConfigs;
     }
 
     public Set<VerifiableCredential> transformClaimsToVCs(final Set<Map<String, Object>> claims) {

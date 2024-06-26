@@ -15,6 +15,7 @@ import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -141,6 +142,34 @@ public class ClaimComplianceProviderController {
         log.info("Gaia-X claims generated");
         log.debug("Claims: {}", claims);
         return convertToJson(claims);
+    }
+
+    @GET
+    @Path("/v1/config")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get services configurations", description = """
+            This operation retrieves all ccp involved service components and their configuration properties.
+            """)
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = Set.class),
+                    examples = {
+                            @ExampleObject(name = "exampleConfig", value = """
+                                [
+                                  {
+                                    "componentName": "ExampleComponent",
+                                    "properties": {
+                                      "key": "property1", "value": "value1",
+                                      "key": "property2", "value": "value2",
+                                      "key": "property3", "value": "value3"
+                                    }
+                                  }
+                                ]"""
+
+                            )
+                    }))
+    })
+    public Set<Map<String,Object>> getConfig() {
+        return verifiableCredentialsProcessor.getConfig();
     }
 
     private JsonNode convertToJson(final Set<String> claims) {

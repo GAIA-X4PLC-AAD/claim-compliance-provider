@@ -8,9 +8,13 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 @ApplicationScoped
 @Slf4j
@@ -30,6 +34,7 @@ public class ComplianceServiceService implements IComplianceServiceService {
         } catch (final WebApplicationException e) {
             final Response response = e.getResponse();
             if (response.hasEntity()) {
+                @SuppressWarnings("unchecked")
                 final Map<String, Object> errorDetails = response.readEntity(Map.class);
                 throw new RestClientException(
                         createMessage(errorDetails),
@@ -48,6 +53,15 @@ public class ComplianceServiceService implements IComplianceServiceService {
                 );
             }
         }
+    }
+
+    public Set<Map<String, Object>> getConfig() {
+        Set<Map<String, Object>> configs = new HashSet<>();
+        Map<String, Object> property = new LinkedHashMap<>();
+        property.put(KEY_PROPERTY, "COMPLIANCE_SERVICE_URL");
+        property.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.compliance.ComplianceServiceClient\".url", String.class));
+        configs.add(property);
+        return configs;
     }
 
     private static String createMessage(final Map<String, Object> errorDetails) {

@@ -10,9 +10,11 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,6 +50,16 @@ public class SdCreatorService implements ISignerService {
             }
         }
         return vCSet;
+    }
+
+    public Set<Map<String, Object>> getConfig() {
+        Set<Map<String, Object>> configs = new HashSet<>();
+        Map<String, Object> property = new LinkedHashMap<>();
+        property.put(KEY_PROPERTY, "SD_CREATOR_URL");
+        property.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.sdcreator.SdCreatorClient\".url", String.class));
+        configs.add(property);
+        return configs;
+
     }
 
     public VerifiablePresentation createVPfromVCs(final Set<VerifiableCredential> credentials) {

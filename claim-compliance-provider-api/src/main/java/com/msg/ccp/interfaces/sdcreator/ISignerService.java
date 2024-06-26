@@ -2,11 +2,12 @@ package com.msg.ccp.interfaces.sdcreator;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
+import com.msg.ccp.interfaces.config.IServiceConfiguration;
 
 import java.util.Map;
 import java.util.Set;
 
-public interface ISignerService {
+public interface ISignerService extends IServiceConfiguration {
 
     Set<VerifiableCredential> createVCsFromClaims(final Set<Map<String, Object>> claims);
 

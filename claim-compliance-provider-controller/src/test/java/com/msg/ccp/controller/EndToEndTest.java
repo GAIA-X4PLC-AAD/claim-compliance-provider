@@ -7,8 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.msg.ccp.catalogue.FederatedCatalogueService;
 import com.msg.ccp.claims.ClaimsCredentialsService;
+import com.msg.ccp.compliance.ComplianceServiceService;
 import com.msg.ccp.controller.payload.GenerateClaimsPayload;
+import com.msg.ccp.sdcreator.SdCreatorService;
 import com.msg.ccp.util.VpVcUtil;
 import com.msg.ccp.wiremock.InjectWireMock;
 import com.msg.ccp.wiremock.WireMockTestResource;
@@ -148,6 +151,7 @@ class EndToEndTest {
                         .post("/v1/send-claims");
 
         // test
+        @SuppressWarnings("unchecked")
         final List<Map<String, Object>> resultVPs = response.getBody().as(List.class);
         assertThat(response.getStatusCode()).isEqualTo(200);
         assertThat(resultVPs).hasSize(3);
@@ -185,6 +189,45 @@ class EndToEndTest {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode jsonNode = mapper.readTree(body);
         assertThat(jsonNode).isNotNull();
+    }
+
+    @Test
+    @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    @SuppressWarnings("unchecked")
+    void testConfigEndpoint() {
+        // action
+        final Response response =
+                given()
+                        .when()
+                        .get("/v1/config");
+        // test
+        assertThat(response.getStatusCode()).isEqualTo(200);
+        final String body = response.getBody().asString();
+        assertThat(body).isNotNull();
+        List<Map<String, Object>> configurations = response.getBody().as(List.class);
+        Map<String, Object> properties;
+        assertThat(configurations).hasSize(3);
+        Map<String, Object> configuration = configurations.get(0);
+        assertThat(configuration).containsEntry("componentName", ComplianceServiceService.class.getSimpleName());
+        assertThat((List<Map<String, Object>>)configuration.get("properties")).hasSize(1);
+        properties = ((List<Map<String, Object>>)configuration.get("properties")).get(0);
+        assertThat(properties).containsEntry("key", "COMPLIANCE_SERVICE_URL")
+                .containsEntry("value", "http://localhost:" + this.wireMockServer.port());
+        configuration = configurations.get(1);
+        assertThat(configuration).containsEntry("componentName", SdCreatorService.class.getSimpleName());
+        assertThat((List<Map<String, Object>>)configuration.get("properties")).hasSize(1);
+        properties = ((List<Map<String, Object>>)configuration.get("properties")).get(0);
+        assertThat(properties).containsEntry("key", "SD_CREATOR_URL")
+                .containsEntry("value", "http://localhost:" + this.wireMockServer.port());
+        configuration = configurations.get(2);
+        assertThat(configuration).containsEntry("componentName", FederatedCatalogueService.class.getSimpleName());
+        assertThat((List<Map<String, Object>>)configuration.get("properties")).hasSize(2);
+        properties = ((List<Map<String, Object>>)configuration.get("properties")).get(0);
+        assertThat(properties).containsEntry("key", "FEDERATED_CATALOGUE_URL")
+                .containsEntry("value", "http://localhost:" + this.wireMockServer.port());
+        properties = ((List<Map<String, Object>>)configuration.get("properties")).get(1);
+        assertThat(properties).containsEntry("key", "KEYCLOAK_URL")
+                .containsEntry("value", "http://localhost:" + (this.wireMockServer.port()+1) + "/auth/realms/quarkus/token");
     }
 
     private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {
