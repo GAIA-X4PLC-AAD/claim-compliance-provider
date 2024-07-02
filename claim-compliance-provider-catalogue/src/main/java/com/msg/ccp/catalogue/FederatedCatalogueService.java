@@ -63,12 +63,12 @@ public class FederatedCatalogueService implements ICatalogueService {
     }
 
     public Set<Map<String, Object>> getConfig() {
-        Set<Map<String, Object>> configs = new LinkedHashSet<>();
-        Map<String, Object> property1 = new LinkedHashMap<>();
+        final Set<Map<String, Object>> configs = new LinkedHashSet<>();
+        final Map<String, Object> property1 = new LinkedHashMap<>();
         property1.put(KEY_PROPERTY, "FEDERATED_CATALOGUE_URL");
         property1.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.catalogue.FederatedCatalogueClient\".url", String.class));
         configs.add(property1);
-        Map<String, Object> property2 = new LinkedHashMap<>();
+        final Map<String, Object> property2 = new LinkedHashMap<>();
         property2.put(KEY_PROPERTY, "KEYCLOAK_URL");
         property2.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.oidc-client.token-path", String.class));
         configs.add(property2);
