@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.msg.ccp.exception.RestClientException;
-import com.msg.ccp.interfaces.catalogue.FederatedCatalogueResponse;
+import com.msg.ccp.interfaces.catalogue.CatalogueResponse;
 import com.msg.ccp.wiremock.InjectWireMock;
 import com.msg.ccp.wiremock.WireMockTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -62,7 +62,7 @@ class FederatedCatalogueServiceTest {
                         .withBody(jsonResponse)));
 
         // action
-        final FederatedCatalogueResponse response = federatedCatalogueService.verify(VerifiablePresentation.fromMap(jsonRequestAsMap));
+        final CatalogueResponse response = federatedCatalogueService.invoke(VerifiablePresentation.fromMap(jsonRequestAsMap));
 
         // test
         assertThat(response).isNotNull();
@@ -93,11 +93,31 @@ class FederatedCatalogueServiceTest {
                                 """)));
 
         // action and test
-        assertThatThrownBy(() -> federatedCatalogueService.verify(INVALID_PAYLOAD)).isInstanceOf(RestClientException.class)
+        assertThatThrownBy(() -> federatedCatalogueService.invoke(INVALID_PAYLOAD)).isInstanceOf(RestClientException.class)
                 .hasMessageStartingWith("Schema error:");
     }
 
-    private FederatedCatalogueResponse createFederatedCatalogueResponse() throws JsonProcessingException {
+    @Test
+    @DisplayName("IF response has no body THEN an exception is thrown.")
+    void missingResponseBody() throws IOException {
+        // prepare
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String jsonRequest = readPayload();
+        final Map<String, Object> jsonRequestAsMap = objectMapper.readValue(jsonRequest, new TypeReference<>() {});
+
+        stubFor(post(urlEqualTo("/verification"))
+                .withRequestBody(equalToJson(jsonRequest, true, false))
+                .willReturn(aResponse()
+                        .withStatus(400)
+                        .withHeader("content-type", "application/json")
+                        ));
+
+        // action and test
+        assertThatThrownBy(() -> federatedCatalogueService.invoke(VerifiablePresentation.fromMap(jsonRequestAsMap))).isInstanceOf(RestClientException.class)
+                .hasMessage("An error occurred while calling the federated catalogue");
+    }
+
+    private CatalogueResponse createFederatedCatalogueResponse() throws JsonProcessingException {
         final String responseString = """
                 {
                     "verificationTimestamp": "2024-03-07T18:23:13.658412618Z",
@@ -110,6 +130,6 @@ class FederatedCatalogueServiceTest {
                 }
                 """;
         final ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(responseString, FederatedCatalogueResponse.class);
+        return objectMapper.readValue(responseString, CatalogueResponse.class);
     }
 }

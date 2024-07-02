@@ -1,5 +1,7 @@
 package com.msg.ccp.compliance;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -17,8 +19,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,8 +45,8 @@ class ComplianceServiceServiceTest {
         final String jsonRequest = Files.readString(Path.of("src/test/resources/verifiablePresentationRequest.json"));
         final String jsonResponse = Files.readString(Path.of("src/test/resources/complianceCredentialsResponse.json"));
         final ObjectMapper mapper = new ObjectMapper();
-        final Map<String, Object> requestMap = mapper.readValue(jsonRequest, new TypeReference<>() {
-        });
+        VerifiablePresentation verifiablePresentation = VerifiablePresentation.fromMap(mapper.readValue(jsonRequest, new TypeReference<>() {
+        }));
 
         stubFor(post(urlEqualTo("/api/credential-offers"))
                 .withRequestBody(equalToJson(jsonRequest))
@@ -56,11 +56,11 @@ class ComplianceServiceServiceTest {
                         .withBody(jsonResponse)));
 
         // action
-        final Map<String, Object> complianceCredential = complianceServiceService.getComplianceCredential(requestMap);
+        final VerifiableCredential complianceCredential = complianceServiceService.getComplianceCredential(verifiablePresentation);
 
         // test
         assertThat(complianceCredential).isNotNull();
-        assertThat(complianceCredential.get("credentialSubject")).isNotNull();
+        assertThat(complianceCredential.toMap().get("credentialSubject")).isNotNull();
     }
 
     @Test
@@ -77,7 +77,20 @@ class ComplianceServiceServiceTest {
                                 }""")));
 
         // action and test
-        assertThatThrownBy(() -> complianceServiceService.getComplianceCredential(Collections.emptyMap())).isInstanceOf(RestClientException.class)
+        assertThatThrownBy(() -> complianceServiceService.getComplianceCredential(new VerifiablePresentation())).isInstanceOf(RestClientException.class)
                 .hasMessageStartingWith("Some error message");
+    }
+
+    @Test
+    @DisplayName("IF body is null in case of exception thrown inside the REST client THEN it is handled by @RestClientExceptionMapper.")
+    void testExceptionHandlingWithEmptyBody() {
+        // Prepare
+        stubFor(post(urlEqualTo("/api/credential-offers"))
+                .willReturn(WireMock.aResponse().withStatus(409).
+                        withHeader("content-type", "application/json")));
+
+        // action and test
+        assertThatThrownBy(() -> complianceServiceService.getComplianceCredential(new VerifiablePresentation())).isInstanceOf(RestClientException.class)
+                .hasMessage("An error occurred while calling the compliance service");
     }
 }

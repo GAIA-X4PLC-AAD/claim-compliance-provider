@@ -1,6 +1,7 @@
 package com.msg.ccp.sdcreator;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -22,10 +23,10 @@ public interface SdCreatorClient {
     @POST
     @Path("/vp-from-vcs")
     @Produces("application/json")
-    Map<String, Object> postVCsGetVP(Set<VerifiableCredential> verifiableCredentials);
+    VerifiablePresentation postVCsGetVP(Set<VerifiableCredential> verifiableCredentials);
 
     @POST
     @Path("/vp-without-proof-from-vcs")
     @Produces("application/json")
-    Map<String, Object> wrapCredentialsIntoVerifiablePresentationWithoutProof(Set<Map<String, Object>> verifiableCredentials);
+    VerifiablePresentation wrapCredentialsIntoVerifiablePresentationWithoutProof(Set<VerifiableCredential> verifiableCredentials);
 }

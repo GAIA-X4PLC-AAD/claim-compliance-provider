@@ -66,8 +66,8 @@ class SdCreatorServiceTest {
     }
 
     @Test
-    @DisplayName("IF exception is thrown inside the REST client THEN we ge a proper error message.")
-    void testExceptionHandling() {
+    @DisplayName("IF exception is thrown inside the REST client (postClaimsGetVCs) THEN we ge a proper error message.")
+    void testExceptionHandlingForVCsFromClaims() {
         // Prepare
         final Map<String, Object> claims = createClaims("service3");
         stubFor(post(urlEqualTo("/vc-from-claims"))
@@ -76,6 +76,34 @@ class SdCreatorServiceTest {
         // action and test
         assertThatThrownBy(() -> sdCreatorService.createVCsFromClaims(Collections.singleton(claims))).isInstanceOf(RestClientException.class)
                 .hasMessage("An error occurred while calling the sd creator: createVCsFromClaims");
+    }
+
+    @Test
+    @DisplayName("IF exception is thrown inside the REST client (postVCsGetVP) THEN we ge a proper error message.")
+    void testExceptionHandlingForVPFromVCs() {
+        // Prepare
+        final Map<String, Object> claims = createClaims("service4");
+        final Set<VerifiableCredential> verifiableCredentials = Set.of(VerifiableCredential.fromMap(wrapWithVC(claims)));
+        stubFor(post(urlEqualTo("/vp-from-vcs"))
+                .willReturn(WireMock.aResponse().withStatus(400)));
+
+        // action and test
+        assertThatThrownBy(() -> sdCreatorService.createVPfromVCs(verifiableCredentials)).isInstanceOf(RestClientException.class)
+                .hasMessage("An error occurred while calling the sd creator: createVPfromVCs");
+    }
+
+    @Test
+    @DisplayName("IF exception is thrown inside the REST client (wrapCredentialsIntoVerifiablePresentationWithoutProof) THEN we ge a proper error message.")
+    void testExceptionHandlingForVPwithoutProofFromVCs() {
+        // Prepare
+        final Map<String, Object> claims = createClaims("service5");
+        final Set<VerifiableCredential> verifiableCredentials = Set.of(VerifiableCredential.fromMap(wrapWithVC(claims)));
+        stubFor(post(urlEqualTo("/vp-without-proof-from-vcs"))
+                .willReturn(WireMock.aResponse().withStatus(400)));
+
+        // action and test
+        assertThatThrownBy(() -> sdCreatorService.createVPwithoutProofFromVCs(verifiableCredentials)).isInstanceOf(RestClientException.class)
+                .hasMessage("An error occurred while calling the sd creator: createVPwithoutProofFromVCs");
     }
 
     private Set<Map<String, Object>> createServiceOfferingClaims() {

@@ -4,20 +4,18 @@ import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.claims.ClaimsCredentialsService;
 import com.msg.ccp.claims.CredentialContainer;
+import com.msg.ccp.claims.PresentationContainer;
 import com.msg.ccp.exception.CcpException;
 import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
 import com.msg.ccp.interfaces.config.IServiceConfiguration;
 import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
-import com.msg.ccp.interfaces.sdcreator.ISignerService;
-import com.msg.ccp.util.VpVcUtil;
-import foundation.identity.jsonld.JsonLDObject;
+import com.msg.ccp.interfaces.signer.ISignerService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Slf4j
@@ -27,21 +25,21 @@ public class VCProcessor implements IClaimComplianceProviderService {
     private static final String COMPONENT_PROPERTIES_PROPERTY = "properties";
 
     private final IComplianceServiceService complianceService;
-    private final ISignerService sdCreatorService;
-    private final ICatalogueService federatedCatalogueService;
+    private final ISignerService signerService;
+    private final ICatalogueService catalogueService;
     private final ClaimsCredentialsService claimsCredentialsService;
 
     private final List<IServiceConfiguration> serviceConfigurations = new ArrayList<>();
 
     @Inject
-    public VCProcessor(final IComplianceServiceService complianceService, final ISignerService sdCreatorService, final ICatalogueService federatedCatalogueService, final ClaimsCredentialsService claimsCredentialsService) {
+    public VCProcessor(final IComplianceServiceService complianceService, final ISignerService signerService, final ICatalogueService catalogueService, final ClaimsCredentialsService claimsCredentialsService) {
         this.complianceService = complianceService;
-        this.sdCreatorService = sdCreatorService;
-        this.federatedCatalogueService = federatedCatalogueService;
+        this.signerService = signerService;
+        this.catalogueService = catalogueService;
         this.claimsCredentialsService = claimsCredentialsService;
         this.serviceConfigurations.add(complianceService);
-        this.serviceConfigurations.add(sdCreatorService);
-        this.serviceConfigurations.add(federatedCatalogueService);
+        this.serviceConfigurations.add(signerService);
+        this.serviceConfigurations.add(catalogueService);
     }
 
     public List<VerifiablePresentation> process(final Set<Map<String, Object>> claims, final Set<VerifiableCredential> verifiableCredentials) {
@@ -51,17 +49,17 @@ public class VCProcessor implements IClaimComplianceProviderService {
 
         final CredentialContainer orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
         final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.verifiableCredentialsGX());
-        final List<VerifiablePresentation> verifiablePresentations = this.splitVCsAndCreateVPs(credentials, complianceCredential);
+        final PresentationContainer presentationContainer = this.splitVCsAndCreateVPs(credentials, complianceCredential);
 
-        this.verifyWithFederatedCatalogue(verifiablePresentations);
+        this.verifyWithFederatedCatalogue(presentationContainer);
         log.info("Processing claims and verifiable credentials finished successfully");
-        return verifiablePresentations;
+        return presentationContainer.toList();
     }
 
     public Set<Map<String, Object>> getConfig() {
         final Set<Map<String, Object>> componentConfigs = new LinkedHashSet<>();
         this.serviceConfigurations.forEach(sc -> {
-            Map<String, Object> componentConfig = new HashMap<>();
+            final Map<String, Object> componentConfig = new HashMap<>();
             componentConfig.put(COMPONENT_NAME_PROPERTY, sc.getClass().getSuperclass().getSimpleName());
             componentConfig.put(COMPONENT_PROPERTIES_PROPERTY, sc.getConfig());
             componentConfigs.add(componentConfig);
@@ -69,73 +67,42 @@ public class VCProcessor implements IClaimComplianceProviderService {
         return componentConfigs;
     }
 
-    public Set<VerifiableCredential> transformClaimsToVCs(final Set<Map<String, Object>> claims) {
-        return this.sdCreatorService.createVCsFromClaims(claims);
+    private Set<VerifiableCredential> transformClaimsToVCs(final Set<Map<String, Object>> claims) {
+        return this.signerService.createVCsFromClaims(claims);
     }
 
-    public VerifiableCredential getComplianceCredential(final Set<VerifiableCredential> verifiableCredentials) {
-        final Set<Map<String, Object>> verifiableCredentialsSet = verifiableCredentials.stream().map(JsonLDObject::getJsonObject).collect(Collectors.toSet());
-        final Map<String, Object> verifiablePresentationWithoutProof = this.sdCreatorService.createVPwithoutProofFromVCs(verifiableCredentialsSet);
-        return VerifiableCredential.fromMap(this.complianceService.getComplianceCredential(verifiablePresentationWithoutProof));
+    private VerifiableCredential getComplianceCredential(final Set<VerifiableCredential> verifiableCredentials) {
+        final VerifiablePresentation verifiablePresentationWithoutProof = this.signerService.createVPwithoutProofFromVCs(verifiableCredentials);
+        return this.complianceService.getComplianceCredential(verifiablePresentationWithoutProof);
     }
 
-    public List<VerifiablePresentation> splitVCsAndCreateVPs(final Set<VerifiableCredential> verifiableCredentials, final VerifiableCredential complianceCredential) {
-        final List<VerifiablePresentation> verifiablePresentations = new ArrayList<>();
-        final List<VerifiableCredential> serviceOfferings = findServiceOfferings(verifiableCredentials);
-        final List<VerifiableCredential> resourceOfferings = findResourceOfferings(verifiableCredentials);
+    private PresentationContainer splitVCsAndCreateVPs(final Set<VerifiableCredential> verifiableCredentials, final VerifiableCredential complianceCredential) {
+        final List<VerifiableCredential> serviceOfferings = this.claimsCredentialsService.findServiceOfferings(verifiableCredentials);
+        final List<VerifiableCredential> resourceOfferings = this.claimsCredentialsService.findResourceOfferings(verifiableCredentials);
         VerifiablePresentation serviceOfferingVP = null;
         VerifiablePresentation resourceOfferingVP = null;
 
         if (!serviceOfferings.isEmpty()) {
-            serviceOfferingVP = this.sdCreatorService.createVPfromVCs(new HashSet<>(serviceOfferings));
+            serviceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(serviceOfferings));
         }
         if (!resourceOfferings.isEmpty()) {
-            resourceOfferingVP = this.sdCreatorService.createVPfromVCs(new HashSet<>(resourceOfferings));
+            resourceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(resourceOfferings));
         }
         if (serviceOfferingVP == null && resourceOfferingVP == null) {
             throw new CcpException("Neither ServiceOffering nor ResourceOffering found");
         }
 
-        final VerifiablePresentation complianceVP = this.sdCreatorService.createVPfromVCs(new HashSet<>(Collections.singletonList(complianceCredential)));
-        verifiablePresentations.add(serviceOfferingVP);
-        verifiablePresentations.add(resourceOfferingVP);
-        verifiablePresentations.add(complianceVP);
-        return verifiablePresentations;
+        final VerifiablePresentation complianceVP = this.signerService.createVPfromVCs(new HashSet<>(Collections.singletonList(complianceCredential)));
+        return new PresentationContainer(serviceOfferingVP, resourceOfferingVP, complianceVP);
     }
 
-    public void verifyWithFederatedCatalogue(final List<VerifiablePresentation> verifiablePresentations) {
+    public void verifyWithFederatedCatalogue(final PresentationContainer presentationContainer) {
         // Exclude the last VerifiablePresentation which is the ComplianceCredentialVP
-        final List<VerifiablePresentation> presentationsToVerify = verifiablePresentations.subList(0, verifiablePresentations.size() - 1);
-        //TODO: refactor this to make it clear that we do not need to verify ComplianceCredentialVP
-        for (final VerifiablePresentation verifiablePresentation : presentationsToVerify) {
-            this.federatedCatalogueService.verify(verifiablePresentation);
+        if (presentationContainer.serviceOfferings() != null) {
+            this.catalogueService.invoke(presentationContainer.serviceOfferings());
         }
-    }
-
-    private List<VerifiableCredential> findServiceOfferings(final Set<VerifiableCredential> verifiableCredentials) {
-        final List<VerifiableCredential> serviceOfferings = new ArrayList<>();
-        for (final VerifiableCredential vc : verifiableCredentials) {
-            final Set<Map<String, Object>> credentialSubjects = VpVcUtil.getCredentialSubjects(vc.toMap());
-            for (final Map<String, Object> credentialSubject : credentialSubjects) {
-                if ("gx:ServiceOffering".equals(VpVcUtil.getType(credentialSubject))) {
-                    serviceOfferings.add(vc);
-                }
-            }
+        if (presentationContainer.resources() != null) {
+            this.catalogueService.invoke(presentationContainer.resources());
         }
-        return serviceOfferings;
-    }
-
-    private List<VerifiableCredential> findResourceOfferings(final Set<VerifiableCredential> verifiableCredentials) {
-        final List<VerifiableCredential> resourceOfferings = new ArrayList<>();
-        final List<String> excludedTypes = Arrays.asList("gx:ServiceOffering", "gx:LegalParticipant", "gx:legalRegistrationNumber", "gx:GaiaXTermsAndConditions");
-        for (final VerifiableCredential vc : verifiableCredentials) {
-            final Set<Map<String, Object>> credentialSubjects = VpVcUtil.getCredentialSubjects(vc.toMap());
-            for (final Map<String, Object> credentialSubject : credentialSubjects) {
-                if (!excludedTypes.contains(VpVcUtil.getType(credentialSubject))) {
-                    resourceOfferings.add(vc);
-                }
-            }
-        }
-        return resourceOfferings;
     }
 }

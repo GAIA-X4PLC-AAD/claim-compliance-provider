@@ -3,6 +3,9 @@ package com.msg.ccp.interfaces.config;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Interface for the service configuration.
+ */
 public interface IServiceConfiguration {
     String KEY_PROPERTY = "key";
     String VALUE_PROPERTY = "value";

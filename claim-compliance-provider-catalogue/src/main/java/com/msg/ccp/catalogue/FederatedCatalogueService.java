@@ -2,7 +2,7 @@ package com.msg.ccp.catalogue;
 
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.exception.RestClientException;
-import com.msg.ccp.interfaces.catalogue.FederatedCatalogueResponse;
+import com.msg.ccp.interfaces.catalogue.CatalogueResponse;
 import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import com.msg.ccp.util.VpVcUtil;
 import io.quarkus.oidc.client.Tokens;
@@ -31,7 +31,7 @@ public class FederatedCatalogueService implements ICatalogueService {
         this.federatedCatalogueClient = federatedCatalogueClient;
     }
 
-    public FederatedCatalogueResponse verify(final VerifiablePresentation verifiablePresentation) {
+    public CatalogueResponse invoke(final VerifiablePresentation verifiablePresentation) {
         log.info("get access token");
         final String accessToken = "Bearer " + tokens.getAccessToken();
 

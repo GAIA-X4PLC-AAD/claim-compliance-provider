@@ -14,6 +14,7 @@ import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -64,8 +65,8 @@ public class ClaimComplianceProviderController {
             
             As a result of the processing, 3 verifiable presentation are created and returned to the caller as a list.
             This verifiable presentations are split into 3 types of verifiable credentials:
-            * VP #1 with ServiceOffering
-            * VP #2 with everything else than ServiceOffering, LegalParticipant, LegalRegistrationNumber, GaiaXTermsAndConditions
+            * VP #1 with ServiceOffering ( **optional** , only present if `ServiceOffering` was passed in claims),
+            * VP #2 with everything else than `ServiceOffering`, `LegalParticipant`, `LegalRegistrationNumber`, `GaiaXTermsAndConditions`. This would be `DataResource` or `PhysicalResource` or a custom type for example.
             * VP #3 with compliance credential.
             
             Note that only VPs #1 and #2 are sent to the federated catalogue.
@@ -93,7 +94,7 @@ public class ClaimComplianceProviderController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
                     @ExampleObject(name = "exampleErrorResponse500", value = SendClaimsPayload.EXAMPLE_RESPONSE_500)
             }))
-    public List<Map<String, Object>> initiateVCProcessing(final SendClaimsPayload payload) {
+    public List<Map<String, Object>> initiateVCProcessing(final @NotNull SendClaimsPayload payload) {
         log.info("Initiating VC processing");
         log.debug("SendClaimsPayload: {}", payload);
         final List<VerifiablePresentation> result = verifiableCredentialsProcessor.process(payload.claims(), payload.verifiableCredentials());

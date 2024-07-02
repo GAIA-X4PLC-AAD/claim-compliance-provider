@@ -14,7 +14,7 @@
     <module>claim-compliance-provider-test</module>
     <module>claim-compliance-provider-catalogue</module>
     <module>claim-compliance-provider-claimcreator</module>
-    <module>claim-compliance-provider-api</module>
+    <module>claim-compliance-provider-interfaces</module>
   </modules>
   <properties>
     <compiler-plugin.version>3.12.1</compiler-plugin.version>
@@ -201,6 +201,7 @@
         <executions>
           <execution>
             <id>make-index</id>
+            <phase>process-classes</phase>
             <goals>
               <goal>jandex</goal>
             </goals>

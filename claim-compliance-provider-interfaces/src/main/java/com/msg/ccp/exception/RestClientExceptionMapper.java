@@ -5,9 +5,17 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Exception mapper for RestClientException.
+ */
 @Slf4j
 @Provider
 public class RestClientExceptionMapper implements ExceptionMapper<RestClientException> {
+    /**
+     * Maps a RestClientException to a response.
+     * @param exception the exception to map.
+     * @return the response.
+     */
     @Override
     public Response toResponse(final RestClientException exception) {
         log.error("A RestClientException occurred", exception);

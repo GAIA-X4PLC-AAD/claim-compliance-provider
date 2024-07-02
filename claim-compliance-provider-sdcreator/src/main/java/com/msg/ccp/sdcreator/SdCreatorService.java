@@ -3,7 +3,7 @@ package com.msg.ccp.sdcreator;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.exception.RestClientException;
-import com.msg.ccp.interfaces.sdcreator.ISignerService;
+import com.msg.ccp.interfaces.signer.ISignerService;
 import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -53,8 +53,8 @@ public class SdCreatorService implements ISignerService {
     }
 
     public Set<Map<String, Object>> getConfig() {
-        Set<Map<String, Object>> configs = new HashSet<>();
-        Map<String, Object> property = new LinkedHashMap<>();
+        final Set<Map<String, Object>> configs = new HashSet<>();
+        final Map<String, Object> property = new LinkedHashMap<>();
         property.put(KEY_PROPERTY, "SD_CREATOR_URL");
         property.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.sdcreator.SdCreatorClient\".url", String.class));
         configs.add(property);
@@ -65,7 +65,7 @@ public class SdCreatorService implements ISignerService {
     public VerifiablePresentation createVPfromVCs(final Set<VerifiableCredential> credentials) {
         log.info("call sd-creator: createVPfromVCs");
         try {
-            return VerifiablePresentation.fromMap(sdCreatorClient.postVCsGetVP(credentials));
+            return sdCreatorClient.postVCsGetVP(credentials);
         } catch (final WebApplicationException e) {
             final Response response = e.getResponse();
             throw new RestClientException(
@@ -78,7 +78,7 @@ public class SdCreatorService implements ISignerService {
         }
     }
 
-    public Map<String, Object> createVPwithoutProofFromVCs(final Set<Map<String, Object>> credentials) {
+    public VerifiablePresentation createVPwithoutProofFromVCs(final Set<VerifiableCredential> credentials) {
         log.info("call sd-creator: createVPwithoutProofFromVCs");
         try {
         return sdCreatorClient.wrapCredentialsIntoVerifiablePresentationWithoutProof(credentials);

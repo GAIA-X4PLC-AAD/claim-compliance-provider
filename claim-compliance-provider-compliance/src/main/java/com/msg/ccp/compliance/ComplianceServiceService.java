@@ -1,5 +1,7 @@
 package com.msg.ccp.compliance;
 
+import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.exception.RestClientException;
 import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
 import com.msg.ccp.util.VpVcUtil;
@@ -27,10 +29,10 @@ public class ComplianceServiceService implements IComplianceServiceService {
         this.complianceServiceApi = complianceServiceApi;
     }
 
-    public Map<String, Object> getComplianceCredential(final Map<String, Object> verifiablePresentationWithoutProof) {
+    public VerifiableCredential getComplianceCredential(final VerifiablePresentation verifiablePresentationWithoutProof) {
         log.info("call compliance service");
         try {
-            return this.complianceServiceApi.postVPGetCC(verifiablePresentationWithoutProof);
+            return VerifiableCredential.fromMap(this.complianceServiceApi.postVPGetCC(verifiablePresentationWithoutProof.toMap()));
         } catch (final WebApplicationException e) {
             final Response response = e.getResponse();
             if (response.hasEntity()) {
@@ -56,8 +58,8 @@ public class ComplianceServiceService implements IComplianceServiceService {
     }
 
     public Set<Map<String, Object>> getConfig() {
-        Set<Map<String, Object>> configs = new HashSet<>();
-        Map<String, Object> property = new LinkedHashMap<>();
+        final Set<Map<String, Object>> configs = new HashSet<>();
+        final Map<String, Object> property = new LinkedHashMap<>();
         property.put(KEY_PROPERTY, "COMPLIANCE_SERVICE_URL");
         property.put(VALUE_PROPERTY, ConfigProvider.getConfig().getValue("quarkus.rest-client.\"com.msg.ccp.compliance.ComplianceServiceClient\".url", String.class));
         configs.add(property);

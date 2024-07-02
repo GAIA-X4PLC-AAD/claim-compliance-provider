@@ -68,7 +68,7 @@ class EndToEndTest {
             final String jsonRequest = objectMapper.writeValueAsString(claim);
             final Map<String, Object> vc = wrapWithVC(claim);
             final String jsonResponse = objectMapper.writeValueAsString(vc);
-            final String type = VpVcUtil.getType(claim);
+            final String type = retrieveType(claim);
             allVerifiableCredentials.add(vc);
             // Add to allVerifiableCredentialsServiceOffering if type is SERVICE_OFFERING_TYPE
             if (SERVICE_OFFERING_TYPE.equals(type)) {
@@ -154,21 +154,25 @@ class EndToEndTest {
         @SuppressWarnings("unchecked")
         final List<Map<String, Object>> resultVPs = response.getBody().as(List.class);
         assertThat(response.getStatusCode()).isEqualTo(200);
+        // 3 VPs are expected: 1 for service offering, 1 for resource offering and 1 for compliance
         assertThat(resultVPs).hasSize(3);
 
         final VerifiablePresentation resultVPServiceOffering = VerifiablePresentation.fromMap(resultVPs.get(0));
         assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
         @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsServiceOffering = (List<Map<String, Object>>) resultVPServiceOffering.getJsonObject().get("verifiableCredential");
+        // 1 service offering VC is expected
         assertThat(vcsServiceOffering).hasSize(1);
 
         final VerifiablePresentation resultVPResourceOffering = VerifiablePresentation.fromMap(resultVPs.get(1));
         assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
         @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsResourceOffering = (List<Map<String, Object>>) resultVPResourceOffering.getJsonObject().get("verifiableCredential");
+        // 5 resource offering VCs are expected
         assertThat(vcsResourceOffering).hasSize(5);
 
         final VerifiablePresentation resultVPCompliance = VerifiablePresentation.fromMap(resultVPs.get(2));
         assertThat(resultVPServiceOffering.getLdProof()).isNotNull();
         @SuppressWarnings("unchecked") final List<Map<String, Object>> vcsCompliance = (List<Map<String, Object>>) resultVPCompliance.getJsonObject().get("verifiableCredential");
+        // 1 compliance VC is expected
         assertThat(vcsCompliance).hasSize(1);
     }
 
@@ -290,8 +294,9 @@ class EndToEndTest {
         return result;
     }
 
-    private Object retrieveType(final Map<String, Object> credentialSubject) {
-        return VpVcUtil.getType(credentialSubject);
+    private String retrieveType(final Map<String, Object> credentialSubject) {
+        assertThat(VpVcUtil.getTypes(credentialSubject)).hasSize(1);
+        return VpVcUtil.getTypes(credentialSubject).get(0);
     }
 
     private boolean isGaiaXType(final Map<String, Object> credentialSubject, final String gaiaXTypeName) {
