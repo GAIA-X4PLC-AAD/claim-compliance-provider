@@ -41,8 +41,8 @@ class EndToEndTest {
     @InjectWireMock
     WireMockServer wireMockServer;
 
-    private final String SERVICE_OFFERING_TYPE = "gx:ServiceOffering";
-    private final List<String> NON_SERVICE_OFFERING_TYPES = Arrays.asList("gx:ServiceOffering", "gx:LegalParticipant", "gx:legalRegistrationNumber", "gx:GaiaXTermsAndConditions");
+    private final static String SERVICE_OFFERING_TYPE = "gx:ServiceOffering";
+    private final static List<String> NON_SERVICE_OFFERING_TYPES = Arrays.asList("gx:ServiceOffering", "gx:LegalParticipant", "gx:legalRegistrationNumber", "gx:GaiaXTermsAndConditions");
 
     @BeforeEach
     public void setup() {

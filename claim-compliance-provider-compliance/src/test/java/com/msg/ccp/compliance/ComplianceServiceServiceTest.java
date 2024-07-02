@@ -45,7 +45,7 @@ class ComplianceServiceServiceTest {
         final String jsonRequest = Files.readString(Path.of("src/test/resources/verifiablePresentationRequest.json"));
         final String jsonResponse = Files.readString(Path.of("src/test/resources/complianceCredentialsResponse.json"));
         final ObjectMapper mapper = new ObjectMapper();
-        VerifiablePresentation verifiablePresentation = VerifiablePresentation.fromMap(mapper.readValue(jsonRequest, new TypeReference<>() {
+        final VerifiablePresentation verifiablePresentation = VerifiablePresentation.fromMap(mapper.readValue(jsonRequest, new TypeReference<>() {
         }));
 
         stubFor(post(urlEqualTo("/api/credential-offers"))

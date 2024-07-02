@@ -58,9 +58,7 @@ class VCProcessorTest {
         final Set<VerifiableCredential> credentials = new HashSet<>();
 
         // action & verify
-        assertThatThrownBy(() -> {
-            vcProcessor.process(claims, credentials);
-        })
+        assertThatThrownBy(() -> vcProcessor.process(claims, credentials))
                 .isInstanceOf(CcpException.class)
                 .hasMessage("Neither ServiceOffering nor ResourceOffering found");
     }
