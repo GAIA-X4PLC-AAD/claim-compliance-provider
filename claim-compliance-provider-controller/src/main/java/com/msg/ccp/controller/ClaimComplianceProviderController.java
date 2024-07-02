@@ -81,7 +81,9 @@ public class ClaimComplianceProviderController {
                     @ExampleObject(name = "examplePayload", value = SendClaimsPayload.EXAMPLE_PAYLOAD)
             }))
     @APIResponse(responseCode = "200", description = "Successful operation",
-            content = @Content(schema = @Schema(implementation = Map.class)))
+            content = @Content(schema = @Schema(implementation = Set.class), examples = {
+                    @ExampleObject(name = "exampleSuccessResponse", value = SendClaimsPayload.EXAMPLE_RESPONSE_200)
+            }))
     @APIResponse(responseCode = "409", description = "Conflict",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
                     @ExampleObject(name = "exampleErrorResponse409", value = SendClaimsPayload.EXAMPLE_RESPONSE_409)
