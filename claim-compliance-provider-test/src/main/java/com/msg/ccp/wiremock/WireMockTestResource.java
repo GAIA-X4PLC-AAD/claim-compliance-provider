@@ -18,8 +18,22 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
         wireMockServer.start();
         log.info("WireMock server started at port: " + wireMockServer.port());
 
-        Map<String, String> config = new HashMap<>();
-        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.SdCreatorClient\".url", wireMockServer.baseUrl());
+        final Map<String, String> config = new HashMap<>();
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientDefault\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClient3dMapping\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientAscs\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientBmw\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientContinental\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientDlr\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientGx4fmPlcaad\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientInfineon\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientIviFraunhofer\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientMsgSystemsAg\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientSetlabs\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientTracetronic\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientTriangraphics\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientTuBerlin\".url", wireMockServer.baseUrl());
+        config.put("quarkus.rest-client.\"com.msg.ccp.sdcreator.clients.SdCreatorClientTuMuenchen\".url", wireMockServer.baseUrl());
         config.put("quarkus.rest-client.\"com.msg.ccp.compliance.ComplianceServiceClient\".url", wireMockServer.baseUrl());
         config.put("quarkus.rest-client.\"com.msg.ccp.catalogue.FederatedCatalogueClient\".url", wireMockServer.baseUrl());
         return config;
@@ -34,7 +48,7 @@ public class WireMockTestResource implements QuarkusTestResourceLifecycleManager
     }
 
     @Override
-    public void inject(TestInjector testInjector) {
+    public void inject(final TestInjector testInjector) {
         testInjector.injectIntoFields(wireMockServer, new TestInjector.AnnotatedAndMatchesType(InjectWireMock.class, WireMockServer.class));
     }
 }

@@ -1,14 +1,15 @@
 package com.msg.ccp.controller.payload;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public record SendClaimsPayload(@NotNull Set<Map<String, Object>> claims,
-                                @NotNull @NotEmpty Set<VerifiableCredential> verifiableCredentials) {
+public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object>> claims,
+                                @NotNull @NotEmpty Set<@Valid VerifiableCredential> verifiableCredentials) {
 
     /**
      * The value of this can be taken from the build runs. Just search for "Claims: " and copy the value without brackets

@@ -14,12 +14,9 @@ import com.msg.ccp.interfaces.controller.IClaimComplianceProviderService;
 import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -43,7 +40,8 @@ public class ClaimComplianceProviderController {
     private final ClaimsCreator claimsCreator;
 
     @Inject
-    public ClaimComplianceProviderController(final IClaimComplianceProviderService verifiableCredentialsProcessor, final ClaimsCreator claimsCreator) {
+    public ClaimComplianceProviderController(final IClaimComplianceProviderService verifiableCredentialsProcessor,
+                                             final ClaimsCreator claimsCreator) {
         this.verifiableCredentialsProcessor = verifiableCredentialsProcessor;
         this.claimsCreator = claimsCreator;
     }
@@ -96,7 +94,7 @@ public class ClaimComplianceProviderController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class), examples = {
                     @ExampleObject(name = "exampleErrorResponse500", value = SendClaimsPayload.EXAMPLE_RESPONSE_500)
             }))
-    public List<Map<String, Object>> initiateVCProcessing(final @NotNull SendClaimsPayload payload) {
+    public List<Map<String, Object>> initiateVCProcessing(@Valid final @NotNull SendClaimsPayload payload) {
         log.info("Initiating VC processing");
         log.debug("SendClaimsPayload: {}", payload);
         final List<VerifiablePresentation> result = verifiableCredentialsProcessor.process(payload.claims(), payload.verifiableCredentials());
@@ -140,6 +138,7 @@ public class ClaimComplianceProviderController {
     public JsonNode generateClaims(final GenerateClaimsPayload payload) {
         log.info("Generating Gaia-X claims");
         log.debug("GenerateClaimsPayload: {}", payload);
+
         final Set<String> claims = claimsCreator.createClaims(payload.legalParticipantId(), payload.physicalResourceLegalParticipantId(),
                 payload.identifierPrefix());
         log.info("Gaia-X claims generated");

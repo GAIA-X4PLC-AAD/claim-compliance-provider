@@ -26,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @QuarkusTestResource(WireMockTestResource.class)
 class SdCreatorServiceTest {
 
+    private static final String ISSUER = "did:web:participant.gxfs.gx4fm.org:msg-systems-ag";
+
     @Inject
     SdCreatorService sdCreatorService;
 
@@ -56,7 +58,7 @@ class SdCreatorServiceTest {
         }
 
         // action
-        final Set<VerifiableCredential> verifiableCredentials = sdCreatorService.createVCsFromClaims(claims);
+        final Set<VerifiableCredential> verifiableCredentials = sdCreatorService.createVCsFromClaims(claims, ISSUER);
 
         // test
         assertThat(verifiableCredentials).hasSize(claims.size());
@@ -74,7 +76,7 @@ class SdCreatorServiceTest {
                 .willReturn(WireMock.aResponse().withStatus(400)));
 
         // action and test
-        assertThatThrownBy(() -> sdCreatorService.createVCsFromClaims(Collections.singleton(claims))).isInstanceOf(RestClientException.class)
+        assertThatThrownBy(() -> sdCreatorService.createVCsFromClaims(Collections.singleton(claims), ISSUER)).isInstanceOf(RestClientException.class)
                 .hasMessage("An error occurred while calling the sd creator: createVCsFromClaims");
     }
 
@@ -88,7 +90,7 @@ class SdCreatorServiceTest {
                 .willReturn(WireMock.aResponse().withStatus(400)));
 
         // action and test
-        assertThatThrownBy(() -> sdCreatorService.createVPfromVCs(verifiableCredentials)).isInstanceOf(RestClientException.class)
+        assertThatThrownBy(() -> sdCreatorService.createVPfromVCs(verifiableCredentials, ISSUER)).isInstanceOf(RestClientException.class)
                 .hasMessage("An error occurred while calling the sd creator: createVPfromVCs");
     }
 
@@ -102,7 +104,7 @@ class SdCreatorServiceTest {
                 .willReturn(WireMock.aResponse().withStatus(400)));
 
         // action and test
-        assertThatThrownBy(() -> sdCreatorService.createVPwithoutProofFromVCs(verifiableCredentials)).isInstanceOf(RestClientException.class)
+        assertThatThrownBy(() -> sdCreatorService.createVPwithoutProofFromVCs(verifiableCredentials, ISSUER)).isInstanceOf(RestClientException.class)
                 .hasMessage("An error occurred while calling the sd creator: createVPwithoutProofFromVCs");
     }
 

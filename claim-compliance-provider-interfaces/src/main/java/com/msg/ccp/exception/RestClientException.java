@@ -7,7 +7,7 @@ import lombok.Getter;
  */
 @Getter
 public class RestClientException extends RuntimeException {
-    private final String httpError;
+    private final String errorDetails;
     private final String exceptionText;
     private final int statusCode;
     private String verifiablePresentationId = "unknown";
@@ -21,7 +21,7 @@ public class RestClientException extends RuntimeException {
      */
     public RestClientException(final String message, final String errorDetails, final String exceptionText, final int statusCode) {
         super(message);
-        this.httpError = errorDetails;
+        this.errorDetails = errorDetails;
         this.exceptionText = exceptionText;
         this.statusCode = statusCode;
     }

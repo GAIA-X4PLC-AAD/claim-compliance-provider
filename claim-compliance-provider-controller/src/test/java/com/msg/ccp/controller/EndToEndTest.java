@@ -22,6 +22,7 @@ import io.quarkus.test.oidc.server.OidcWiremockTestResource;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -53,11 +54,11 @@ class EndToEndTest {
 
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    @DisplayName("WHEN claims are sent to send-claims endpoint THEN VPs are returned.")
     void testSendClaimsEndpoint() throws IOException {
         // prepare
         final ObjectMapper objectMapper = new ObjectMapper();
-
-        final Map<String, Object> claimsAndCredentials = readClaimsAndCredentials(objectMapper);
+        final Map<String, Object> claimsAndCredentials = readClaimsAndCredentials(objectMapper, "src/test/resources/end2end/01_serviceInput.json");
         @SuppressWarnings("unchecked") final List<Map<String, Object>> credentialsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("verifiableCredentials");
         @SuppressWarnings("unchecked") final List<Map<String, Object>> claimsFromPayload = (List<Map<String, Object>>) claimsAndCredentials.get("claims");
         final Set<Map<String, Object>> allVerifiableCredentials = new HashSet<>(credentialsFromPayload);
@@ -178,6 +179,29 @@ class EndToEndTest {
 
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    @DisplayName("WHEN emtpy claims are sent to send-claims endpoint THEN error 400 is returned.")
+    void testSendEmptyClaimsEndpoint() throws IOException {
+        // prepare
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, Object> claimsAndCredentials = readClaimsAndCredentials(objectMapper, "src/test/resources/end2end/02_emptyServiceInput.json");
+
+        // action
+        final Response response =
+                given()
+                        .contentType(ContentType.JSON)
+                        .body(claimsAndCredentials)
+                        .when()
+                        .post("/v1/send-claims");
+
+        // test
+        assertThat(response.getStatusCode()).isEqualTo(400);
+        assertThat(response.getBody().asString()).isNotEmpty();
+        assertThat(response.getBody().asString()).contains("Constraint violation in interface");
+    }
+
+    @Test
+    @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    @DisplayName("WHEN valid payload is sent to generate-claims endpoint THEN claims in json format are returned.")
     void testGenerateClaimsEndpoint() throws JsonProcessingException {
         // action
         final Response response =
@@ -197,6 +221,7 @@ class EndToEndTest {
 
     @Test
     @TestHTTPEndpoint(ClaimComplianceProviderController.class)
+    @DisplayName("WHEN config endpoint is requested THEN configurations are returned.")
     @SuppressWarnings("unchecked")
     void testConfigEndpoint() {
         // action
@@ -235,8 +260,8 @@ class EndToEndTest {
         assertThat(properties.get("value")).asString().contains("/auth/realms/quarkus/token");
     }
 
-    private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper) throws IOException {
-        final String inputPayload = Files.readString(Path.of("src/test/resources/end2end/01_serviceInput.json"));
+    private Map<String, Object> readClaimsAndCredentials(final ObjectMapper objectMapper, final String filePath) throws IOException {
+        final String inputPayload = Files.readString(Path.of(filePath));
         return objectMapper.readValue(inputPayload, new TypeReference<>() {});
     }
 

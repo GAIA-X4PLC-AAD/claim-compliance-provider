@@ -5,7 +5,7 @@ import com.danubetech.verifiablecredentials.VerifiablePresentation;
 import com.msg.ccp.claims.ClaimsCredentialsService;
 import com.msg.ccp.claims.CredentialContainer;
 import com.msg.ccp.claims.PresentationContainer;
-import com.msg.ccp.exception.CcpException;
+import com.msg.ccp.exception.ValidationException;
 import com.msg.ccp.interfaces.catalogue.ICatalogueService;
 import com.msg.ccp.interfaces.compliance.IComplianceServiceService;
 import com.msg.ccp.interfaces.config.IServiceConfiguration;
@@ -45,11 +45,12 @@ public class VCProcessor implements IClaimComplianceProviderService {
     public List<VerifiablePresentation> process(final Set<Map<String, Object>> claims, final Set<VerifiableCredential> verifiableCredentials) {
         log.info("Processing claims and verifiable credentials");
         final Set<VerifiableCredential> credentials = new HashSet<>(verifiableCredentials);
-        credentials.addAll(this.transformClaimsToVCs(claims));
+        final String issuerOfParticipant = claimsCredentialsService.getIssuerOfParticipant(verifiableCredentials);
+        credentials.addAll(this.transformClaimsToVCs(claims, issuerOfParticipant));
 
         final CredentialContainer orderedVerifiableCredentials = this.claimsCredentialsService.separateDomainSpecificCredentials(credentials);
-        final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.verifiableCredentialsGX());
-        final PresentationContainer presentationContainer = this.splitVCsAndCreateVPs(credentials, complianceCredential);
+        final VerifiableCredential complianceCredential = this.getComplianceCredential(orderedVerifiableCredentials.verifiableCredentialsGX(), issuerOfParticipant);
+        final PresentationContainer presentationContainer = this.splitVCsAndCreateVPs(credentials, complianceCredential, issuerOfParticipant);
 
         this.verifyWithFederatedCatalogue(presentationContainer);
         log.info("Processing claims and verifiable credentials finished successfully");
@@ -67,32 +68,32 @@ public class VCProcessor implements IClaimComplianceProviderService {
         return componentConfigs;
     }
 
-    private Set<VerifiableCredential> transformClaimsToVCs(final Set<Map<String, Object>> claims) {
-        return this.signerService.createVCsFromClaims(claims);
+    private Set<VerifiableCredential> transformClaimsToVCs(final Set<Map<String, Object>> claims, final String issuer) {
+        return this.signerService.createVCsFromClaims(claims, issuer);
     }
 
-    private VerifiableCredential getComplianceCredential(final Set<VerifiableCredential> verifiableCredentials) {
-        final VerifiablePresentation verifiablePresentationWithoutProof = this.signerService.createVPwithoutProofFromVCs(verifiableCredentials);
+    private VerifiableCredential getComplianceCredential(final Set<VerifiableCredential> verifiableCredentials, final String issuer) {
+        final VerifiablePresentation verifiablePresentationWithoutProof = this.signerService.createVPwithoutProofFromVCs(verifiableCredentials, issuer);
         return this.complianceService.getComplianceCredential(verifiablePresentationWithoutProof);
     }
 
-    private PresentationContainer splitVCsAndCreateVPs(final Set<VerifiableCredential> verifiableCredentials, final VerifiableCredential complianceCredential) {
+    private PresentationContainer splitVCsAndCreateVPs(final Set<VerifiableCredential> verifiableCredentials, final VerifiableCredential complianceCredential, final String issuer) {
         final List<VerifiableCredential> serviceOfferings = this.claimsCredentialsService.findServiceOfferings(verifiableCredentials);
         final List<VerifiableCredential> resourceOfferings = this.claimsCredentialsService.findResourceOfferings(verifiableCredentials);
         VerifiablePresentation serviceOfferingVP = null;
         VerifiablePresentation resourceOfferingVP = null;
 
         if (!serviceOfferings.isEmpty()) {
-            serviceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(serviceOfferings));
+            serviceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(serviceOfferings), issuer);
         }
         if (!resourceOfferings.isEmpty()) {
-            resourceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(resourceOfferings));
+            resourceOfferingVP = this.signerService.createVPfromVCs(new HashSet<>(resourceOfferings), issuer);
         }
         if (serviceOfferingVP == null && resourceOfferingVP == null) {
-            throw new CcpException("Neither ServiceOffering nor ResourceOffering found");
+            throw new ValidationException("Neither ServiceOffering nor ResourceOffering found");
         }
 
-        final VerifiablePresentation complianceVP = this.signerService.createVPfromVCs(new HashSet<>(Collections.singletonList(complianceCredential)));
+        final VerifiablePresentation complianceVP = this.signerService.createVPfromVCs(new HashSet<>(Collections.singletonList(complianceCredential)), issuer);
         return new PresentationContainer(serviceOfferingVP, resourceOfferingVP, complianceVP);
     }
 

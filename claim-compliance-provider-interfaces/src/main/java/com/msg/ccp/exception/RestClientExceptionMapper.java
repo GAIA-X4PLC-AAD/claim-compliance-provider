@@ -20,7 +20,7 @@ public class RestClientExceptionMapper implements ExceptionMapper<RestClientExce
     public Response toResponse(final RestClientException exception) {
         log.error("A RestClientException occurred", exception);
         return Response.status(exception.getStatusCode())
-                .entity(new ErrorResponse(exception.getMessage(), exception.getHttpError(), exception.getExceptionText(), exception.getStatusCode(), exception.getVerifiablePresentationId()))
+                .entity(new ErrorResponse(exception.getMessage(), exception.getErrorDetails(), exception.getExceptionText(), exception.getStatusCode(), exception.getVerifiablePresentationId()))
                 .build();
     }
 }

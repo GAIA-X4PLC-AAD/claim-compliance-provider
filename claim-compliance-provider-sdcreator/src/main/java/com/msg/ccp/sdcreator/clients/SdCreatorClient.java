@@ -1,18 +1,19 @@
-package com.msg.ccp.sdcreator;
+package com.msg.ccp.sdcreator.clients;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 import com.danubetech.verifiablecredentials.VerifiablePresentation;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import java.util.Map;
 import java.util.Set;
 
-@ApplicationScoped
-@RegisterRestClient
+/**
+ * REST client for the sd-creator service.
+ * Note there will be several clients deriving from this interface since there is a sd-creator service for each project partner.
+ * Please also see javadoc in ClientProvider for more information.
+ */
 public interface SdCreatorClient {
 
     @POST

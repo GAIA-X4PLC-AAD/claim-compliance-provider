@@ -1,10 +1,12 @@
 package com.msg.ccp.claims;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
+import com.msg.ccp.exception.ValidationException;
 import com.msg.ccp.util.VpVcUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.URI;
 import java.util.*;
 
 @ApplicationScoped
@@ -86,6 +88,24 @@ public class ClaimsCredentialsService {
             }
         }
         return resourceOfferings;
+    }
+
+    public String getIssuerOfParticipant(final Set<VerifiableCredential> verifiableCredentials) {
+        if (verifiableCredentials.isEmpty()) {
+            throw new ValidationException("No verifiable credentials provided!");
+        }
+        return verifiableCredentials.stream()
+                .filter(vc -> VpVcUtil.getCredentialSubjects(vc.toMap()).stream()
+                        .anyMatch(cs -> removePrefixes(VpVcUtil.getTypes(cs)).contains(LEGAL_PARTICIPANT)))
+                .map(vc -> {
+                    final URI issuer = vc.getIssuer();
+                    if (issuer == null) {
+                        throw new ValidationException("No Issuer is set in the LegalParticipant!");
+                    }
+                    return issuer.toString();
+                })
+                .findFirst()
+                .orElseThrow(() -> new ValidationException("No LegalParticipant found in list of verifiableCredentials!"));
     }
 
     private List<String> extractTypes(final VerifiableCredential credential) {
