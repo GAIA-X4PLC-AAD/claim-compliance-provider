@@ -53,8 +53,17 @@ public class ClaimComplianceProviderController {
     @Operation(summary = "Initiate VC Processing", description = """
             This operation initiates the processing of **Gaia-X participant credentials** and claims.
             The input payload contains `claims` and `verifiableCredentials`.
-            * The `claims` are the data that the participant wants to sign and process with this service.
-            * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__.
+            * The `claims` are the data that the participant wants to sign and process with this service. In a typical scenario claims for following types should be transmitted: 
+              * `ServiceOffering`
+              * `DataResource`
+              * `PhysicalResource`
+              * `InstantiatedVirtualResource`
+              * `ServiceAccessPoint`
+              * and any other `custom` type.
+            * The `verifiableCredentials` are the participant credentials that are sent along the signed claims to the __Gaia-X compliance service__. Following types are expected:
+              * `LegalParticipant`
+              * `legalRegistrationNumber`
+              * `GaiaXTermsAndConditions`
             
             The claims
             * will be signed and
