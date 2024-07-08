@@ -8,7 +8,8 @@
 
 ## Introduction
 * This is a short overview of the architecture of the claim compliance provider (CCP).
-* All embedded pictures stored in the `pics` directory are created and are **editable** with [draw.io](https://app.diagrams.net/).
+* All embedded pictures stored in the `pics` directory are created and are **editable** with [draw.io](https://www.drawio.com/).
+* Please also have a look into the [API documentation](https://claim-compliance-provider.gxfs.gx4fm.org/docs/) for more details.
 
 ## Context view
 ![context view](pics/01_context_view.drawio.png) 
