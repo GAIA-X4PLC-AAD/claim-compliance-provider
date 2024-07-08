@@ -32,7 +32,7 @@ E.g. the signing tool (here `sdcreator`) as well as the whole processing unit (h
 - **sdcreator**: 
   - The current implementation of the signing tool is the [SD-Creator](https://github.com/GAIA-X4PLC-AAD/self-description-creator) and is responsible for signing the claims / VCs / VPs.
   - >Note that there is one instance of SD-Creator per project partner up and running. This component decides along the issuer of the `LegalParticipant` which instance to call:
-    > 
+
     ![sdcreator](pics/04_sdcreator.drawio.png)
 - **compliance**:
   - The compliance service is responsible for sending the signed GX claims (VCs) along with the three participant credentials described above in a VP to the compliance service.
