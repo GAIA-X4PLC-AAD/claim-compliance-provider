@@ -29,13 +29,13 @@ public class RestClientException extends RuntimeException {
     /**
      * Constructor for RestClientException.
      * @param message the message of the error.
-     * @param httpError details of the error if available.
+     * @param errorDetails details of the error if available.
      * @param exceptionText the exception message.
      * @param statusCode the HTTP status code of the error.
      * @param verifiablePresentationId the verifiable presentation id if available.
      */
-    public RestClientException(final String message, final String httpError, final String exceptionText, final int statusCode, final String verifiablePresentationId) {
-        this(message, httpError, exceptionText, statusCode);
+    public RestClientException(final String message, final String errorDetails, final String exceptionText, final int statusCode, final String verifiablePresentationId) {
+        this(message, errorDetails, exceptionText, statusCode);
         this.verifiablePresentationId = verifiablePresentationId;
     }
 }

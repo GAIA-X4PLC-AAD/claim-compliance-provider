@@ -770,7 +770,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
     public static final String EXAMPLE_RESPONSE_409 = """
             {
               "message": "The signature of the document with ID did:web:sd-creator.gxfs.gx4fm.org:id-documents:d3ebe5f7d37e44d2b2d425fb9daaa4cd cannot be validated, please check the document has not been tampered",
-              "httpError": "Conflict",
+              "errorDetails": "Conflict",
               "exceptionMessage": "The signature of the document with ID did:web:sd-creator.gxfs.gx4fm.org:id-documents:d3ebeaaa4cd cannot be validated, please check the document has not been tampered",
               "statusCode": 409,
               "verifiablePresentationId": "did:web:sd-creator.gxfs.gx4fm.org:id-documents:fb6f1ed484fb48e6b7b25453a0ac39d7"
@@ -780,7 +780,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
     public static final String EXAMPLE_RESPONSE_422 = """
             {
               "message": "Value does not have shape gx:DataAccountExportShape",
-              "httpError": "verification_error",
+              "errorDetails": "verification_error",
               "exceptionMessage": "Unprocessable Entity",
               "statusCode": 422,
               "verifiablePresentationId": "did:web:sd-creator.gxfs.gx4fm.org:id-documents:fb6f1ed484fb48e6b7b25453a0ac39d7"
@@ -790,7 +790,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
     public static final String EXAMPLE_RESPONSE_500 = """
             {
               "message": "NullPointerException",
-              "httpError": "Internal server error",
+              "errorDetails": "Internal server error",
               "exceptionMessage": "null",
               "statusCode": 500,
               "verifiablePresentationId": "unknown"
