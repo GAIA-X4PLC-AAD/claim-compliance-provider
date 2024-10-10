@@ -1,6 +1,6 @@
 # Update example claims after changing the json files.
 
-Once one of the json file is changed, the example payloads should be updated in class `SendClaimsPayload.LIST_OF_CLAIMS`.
+Once one of the json files is changed, the example payloads should be updated in class `SendClaimsPayload.LIST_OF_CLAIMS`.
 + Perform build
 + Search for "Claims: " in the log output
 + Copy the claims and paste them in the class `SendClaimsPayload.LIST_OF_CLAIMS` (without surrounding brackets `[` and `]`)

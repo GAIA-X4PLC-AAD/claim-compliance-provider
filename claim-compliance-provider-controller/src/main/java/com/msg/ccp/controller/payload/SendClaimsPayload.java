@@ -26,7 +26,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                 "@id": "https://www.gaia-x4plcaad.info/claims/service-access-point/25929d5f-a577-475c-aab8-aa05c65e8d1c",
                 "@type": "gx:ServiceAccessPoint",
                 "gx:name": {
-                  "@value": "Provider EDC",
+                  "@value": "edc_pr",
                   "@type": "xsd:string"
                 },
                 "gx:host": {
@@ -622,7 +622,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                       },
                       "gx:name": {
                         "@type": "xsd:string",
-                        "@value": "Provider EDC"
+                        "@value": "edc_pr"
                       },
                       "gx:openAPI": {
                         "@type": "xsd:string",

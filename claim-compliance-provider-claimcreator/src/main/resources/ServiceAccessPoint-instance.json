@@ -6,7 +6,7 @@
   "@id": "{serviceAccessPointId}",
   "@type": "gx:ServiceAccessPoint",
   "gx:name": {
-    "@value": "Provider EDC",
+    "@value": "edc_pr",
     "@type": "xsd:string"
   },
   "gx:host": {
