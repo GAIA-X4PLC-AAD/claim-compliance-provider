@@ -252,7 +252,7 @@
         "surveyonto:SurveyResultDataOffering"
       ],
       "surveyonto:edc_endpoint": {
-        "@value": "https://edcdb-1.gxfs.gx4fm.org/",
+        "@value": "https://edc-pr.gxfs.gx4fm.org/",
         "@type": "xsd:string"
       },
       "surveyonto:contract_id": {

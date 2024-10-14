@@ -30,7 +30,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                   "@type": "xsd:string"
                 },
                 "gx:host": {
-                  "@value": "edcdb-pr.gxfs.gx4fm.org/",
+                  "@value": "edc-pr.gxfs.gx4fm.org/",
                   "@type": "xsd:string"
                 },
                 "gx:protocol": {
@@ -194,7 +194,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                     "surveyonto:SurveyResultDataOffering"
                   ],
                   "surveyonto:edc_endpoint": {
-                    "@value": "https://edcdb-1.gxfs.gx4fm.org/",
+                    "@value": "https://edc-pr.gxfs.gx4fm.org/",
                     "@type": "xsd:string"
                   },
                   "surveyonto:contract_id": {
@@ -535,7 +535,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                       },
                       "surveyonto:edc_endpoint": {
                         "@type": "xsd:string",
-                        "@value": "https://edcdb-1.gxfs.gx4fm.org/"
+                        "@value": "https://edc-pr.gxfs.gx4fm.org/"
                       },
                       "surveyonto:survey_close_time": {
                         "@type": "xsd:dateTime",
@@ -618,7 +618,7 @@ public record SendClaimsPayload(@NotNull @NotEmpty Set<@Valid Map<String, Object
                       "@type": "gx:ServiceAccessPoint",
                       "gx:host": {
                         "@type": "xsd:string",
-                        "@value": "edcdb-pr.gxfs.gx4fm.org/"
+                        "@value": "edc-pr.gxfs.gx4fm.org/"
                       },
                       "gx:name": {
                         "@type": "xsd:string",
